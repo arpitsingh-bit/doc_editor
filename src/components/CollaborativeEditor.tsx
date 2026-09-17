@@ -290,7 +290,9 @@ export default function CollaborativeEditor({
 
   const [status, setStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting')
   const [lastSyncTime, setLastSyncTime] = useState<string>('')
-  const [currentUser, setCurrentUser] = useState<UserState>(() => generateRandomUser())
+  // Deferred client-only: random name/color must NOT run during SSR or hydration mismatch occurs
+  const [currentUser, setCurrentUser] = useState<UserState>({ name: 'Loading...', color: '#3b82f6' })
+  const [isMounted, setIsMounted] = useState(false)
   const [collaborators, setCollaborators] = useState<Collaborator[]>([])
   const [showUserModal, setShowUserModal] = useState<boolean>(false)
   const [showDemoModal, setShowDemoModal] = useState<boolean>(false)
@@ -311,6 +313,13 @@ export default function CollaborativeEditor({
   // Stable Y.Doc per roomName
   const doc = useMemo(() => new Y.Doc(), [roomName])
   const [provider, setProvider] = useState<WebsocketProvider | null>(null)
+
+  // Client-only: generate random user after hydration to prevent SSR mismatch
+  useEffect(() => {
+    const user = generateRandomUser()
+    setCurrentUser(user)
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     const wsProvider = new WebsocketProvider(resolvedServerUrl, roomName, doc, {
@@ -426,6 +435,15 @@ export default function CollaborativeEditor({
     navigator.clipboard.writeText(pitch)
     setCopiedPitch(true)
     setTimeout(() => setCopiedPitch(false), 2000)
+  }
+
+  // Avoid rendering dynamic content during SSR — prevents hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className="flex flex-col min-h-screen bg-slate-100 text-slate-900 font-sans items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
   return (
