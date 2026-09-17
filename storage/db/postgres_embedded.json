@@ -1,0 +1,168 @@
+{
+  "documents": {
+    "hackathon-document": {
+      "id": "hackathon-document",
+      "title": "hackathon-document",
+      "created_at": "2026-09-17T19:16:56.693Z",
+      "updated_at": "2026-09-17T19:19:07.905Z",
+      "owner_id": "anonymous"
+    },
+    "master-test-room-1789652554984": {
+      "id": "master-test-room-1789652554984",
+      "title": "System Architecture Blueprint",
+      "created_at": "2026-09-17T19:16:56.694Z",
+      "updated_at": "2026-09-17T19:16:56.694Z",
+      "owner_id": "anonymous"
+    },
+    "persist-room-1789651721825": {
+      "id": "persist-room-1789651721825",
+      "title": "Durable Persistent Document  This text m",
+      "created_at": "2026-09-17T19:16:56.695Z",
+      "updated_at": "2026-09-17T19:16:56.695Z",
+      "owner_id": "anonymous"
+    },
+    "reconnect-test-1789651830695": {
+      "id": "reconnect-test-1789651830695",
+      "title": "reconnect-test-1789651830695",
+      "created_at": "2026-09-17T19:16:56.695Z",
+      "updated_at": "2026-09-17T19:16:56.695Z",
+      "owner_id": "anonymous"
+    },
+    "title-test-room-1789651976676": {
+      "id": "title-test-room-1789651976676",
+      "title": "Quarterly Product Strategy 2026 — Finalized",
+      "created_at": "2026-09-17T19:16:56.695Z",
+      "updated_at": "2026-09-17T19:16:56.695Z",
+      "owner_id": "anonymous"
+    },
+    "master-test-room-1789672707885": {
+      "id": "master-test-room-1789672707885",
+      "title": "master-test-room-1789672707885",
+      "created_at": "2026-09-17T19:18:29.718Z",
+      "updated_at": "2026-09-17T19:18:29.719Z",
+      "owner_id": "anonymous"
+    },
+    "master-test-room-1789672737252": {
+      "id": "master-test-room-1789672737252",
+      "title": "master-test-room-1789672737252",
+      "created_at": "2026-09-17T19:18:58.072Z",
+      "updated_at": "2026-09-17T19:18:59.089Z",
+      "owner_id": "anonymous"
+    },
+    "test-cascade-doc-1789672755301": {
+      "id": "test-cascade-doc-1789672755301",
+      "title": "Cascade Test Doc",
+      "created_at": "2026-09-17T19:19:15.303Z",
+      "updated_at": "2026-09-17T19:19:15.303Z",
+      "owner_id": "anonymous"
+    }
+  },
+  "document_snapshots": [
+    {
+      "id": 1,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:16:56.693Z",
+      "bytes": 148
+    },
+    {
+      "id": 2,
+      "document_id": "master-test-room-1789652554984",
+      "binary_state_base64": "AQWGlpfTDQAHAQdkZWZhdWx0AwdoZWFkaW5nBwCGlpfTDQAGBACGlpfTDQETTWFzdGVyIFRlc3QgSGVhZGluZygAhpaX0w0ABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:16:56.694Z",
+      "bytes": 121
+    },
+    {
+      "id": 3,
+      "document_id": "persist-room-1789651721825",
+      "binary_state_base64": "AQfE7MiCDwAHAQdkZWZhdWx0AwdoZWFkaW5nBwDE7MiCDwAGBADE7MiCDwEbRHVyYWJsZSBQZXJzaXN0ZW50IERvY3VtZW50KADE7MiCDwAFbGV2ZWwBdwExh8TsyIIPAAMJcGFyYWdyYXBoBwDE7MiCDx4GBADE7MiCDx81VGhpcyB0ZXh0IG11c3Qgc3Vydml2ZSByZWZyZXNoZXMgYW5kIHNlcnZlciByZXN0YXJ0cy4A",
+      "created_at": "2026-09-17T19:16:56.695Z",
+      "bytes": 180
+    },
+    {
+      "id": 4,
+      "document_id": "reconnect-test-1789651830695",
+      "binary_state_base64": "AgHJgpf6DAAEAQxzeW5jLWNoYW5uZWwaW0luaXRpYWwgc2hhcmVkIHNlbnRlbmNlXSAB+Oyb1woAhMmCl/oMGR9bRWRpdCBtYWRlIGJ5IEIgZHVyaW5nIG91dGFnZV0gAA==",
+      "created_at": "2026-09-17T19:16:56.695Z",
+      "bytes": 97
+    },
+    {
+      "id": 5,
+      "document_id": "title-test-room-1789651976676",
+      "binary_state_base64": "AgG01Y29DwAEAQV0aXRsZR9RdWFydGVybHkgUHJvZHVjdCBTdHJhdGVneSAyMDI2AYjN8JsMAIS01Y29Dx4OIOKAlCBGaW5hbGl6ZWQA",
+      "created_at": "2026-09-17T19:16:56.695Z",
+      "bytes": 78
+    },
+    {
+      "id": 6,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:18:12.912Z",
+      "bytes": 148
+    },
+    {
+      "id": 7,
+      "document_id": "master-test-room-1789672707885",
+      "binary_state_base64": "AQWapYLQCgAHAQdkZWZhdWx0AwdoZWFkaW5nBwCapYLQCgAGBACapYLQCgETTWFzdGVyIFRlc3QgSGVhZGluZygAmqWC0AoABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:18:29.718Z",
+      "bytes": 121
+    },
+    {
+      "id": 8,
+      "document_id": "master-test-room-1789672707885",
+      "binary_state_base64": "AQWapYLQCgAHAQdkZWZhdWx0AwdoZWFkaW5nBwCapYLQCgAGBACapYLQCgETTWFzdGVyIFRlc3QgSGVhZGluZygAmqWC0AoABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:18:29.719Z",
+      "bytes": 121
+    },
+    {
+      "id": 9,
+      "document_id": "master-test-room-1789672737252",
+      "binary_state_base64": "AQX2kIDlAwAHAQdkZWZhdWx0AwdoZWFkaW5nBwD2kIDlAwAGBAD2kIDlAwETTWFzdGVyIFRlc3QgSGVhZGluZygA9pCA5QMABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:18:58.072Z",
+      "bytes": 121
+    },
+    {
+      "id": 10,
+      "document_id": "master-test-room-1789672737252",
+      "binary_state_base64": "AQX2kIDlAwAHAQdkZWZhdWx0AwdoZWFkaW5nBwD2kIDlAwAGBAD2kIDlAwETTWFzdGVyIFRlc3QgSGVhZGluZygA9pCA5QMABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:18:59.079Z",
+      "bytes": 121
+    },
+    {
+      "id": 11,
+      "document_id": "master-test-room-1789672737252",
+      "binary_state_base64": "AQX2kIDlAwAHAQdkZWZhdWx0AwdoZWFkaW5nBwD2kIDlAwAGBAD2kIDlAwETTWFzdGVyIFRlc3QgSGVhZGluZygA9pCA5QMABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:18:59.081Z",
+      "bytes": 121
+    },
+    {
+      "id": 12,
+      "document_id": "master-test-room-1789672737252",
+      "binary_state_base64": "AQX2kIDlAwAHAQdkZWZhdWx0AwdoZWFkaW5nBwD2kIDlAwAGBAD2kIDlAwETTWFzdGVyIFRlc3QgSGVhZGluZygA9pCA5QMABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:18:59.088Z",
+      "bytes": 121
+    },
+    {
+      "id": 13,
+      "document_id": "master-test-room-1789672737252",
+      "binary_state_base64": "AQX2kIDlAwAHAQdkZWZhdWx0AwdoZWFkaW5nBwD2kIDlAwAGBAD2kIDlAwETTWFzdGVyIFRlc3QgSGVhZGluZygA9pCA5QMABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:18:59.089Z",
+      "bytes": 121
+    },
+    {
+      "id": 14,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:19:07.905Z",
+      "bytes": 148
+    },
+    {
+      "id": 15,
+      "document_id": "test-cascade-doc-1789672755301",
+      "binary_state_base64": "AQHBpYmJBgAEAQVwcm9zZUVIZWxsbyBQcm9kdWN0aW9uIFBlcnNpc3RlbmNlOiBSZWRpcyBIb3QgQ2FjaGUgKyBQb3N0Z3JlU1FMIFNuYXBzaG90cyEA",
+      "created_at": "2026-09-17T19:19:15.303Z",
+      "bytes": 87
+    }
+  ],
+  "document_versions": []
+}
