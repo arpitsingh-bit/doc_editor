@@ -27,10 +27,11 @@ async function bootstrap() {
   compactionManager.init(docs, cascadePersistence)
 
   const server = http.createServer(async (req, res) => {
-    // Set standard CORS headers for API calls
+    // Set standard CORS & Cache headers for API calls
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
 
     if (req.method === 'OPTIONS') {
       res.writeHead(204)
@@ -159,6 +160,30 @@ async function bootstrap() {
       // Non-destructive forward-transaction restore:
       // Preserves Y.Doc state vector continuity and multi-client connections
       const Y = require('yjs')
+
+      // Recursive helper to clone Yjs XML tree while keeping nodes attached
+      function copyXmlChildren(srcParent, destParent) {
+        for (let i = 0; i < srcParent.length; i++) {
+          const child = srcParent.get(i)
+          if (child instanceof Y.XmlText) {
+            const newText = new Y.XmlText()
+            destParent.push([newText])
+            const delta = child.toDelta()
+            if (delta && delta.length > 0) {
+              newText.applyDelta(delta)
+            }
+          } else if (child instanceof Y.XmlElement) {
+            const newEl = new Y.XmlElement(child.nodeName)
+            destParent.push([newEl])
+            const attrs = child.getAttributes()
+            for (const [k, v] of Object.entries(attrs)) {
+              newEl.setAttribute(k, v)
+            }
+            copyXmlChildren(child, newEl)
+          }
+        }
+      }
+
       let activeDoc = docs.get(docId)
       if (activeDoc) {
         const histDoc = new Y.Doc()
@@ -176,21 +201,22 @@ async function bootstrap() {
           // 2. Restore ProseMirror XML fragment
           const curFrag = activeDoc.getXmlFragment('default')
           const histFrag = histDoc.getXmlFragment('default')
-          if (curFrag && histFrag && histFrag.length > 0) {
+          if (curFrag && histFrag) {
             curFrag.delete(0, curFrag.length)
-            for (let i = 0; i < histFrag.length; i++) {
-              curFrag.push([histFrag.get(i).clone()])
-            }
+            copyXmlChildren(histFrag, curFrag)
           }
 
           // 3. Restore plain text prose if used
           const curProse = activeDoc.getText('prose')
           const histProse = histDoc.getText('prose')
-          if (curProse && histProse && histProse.length > 0) {
+          if (curProse && histProse) {
             curProse.delete(0, curProse.length)
             curProse.insert(0, histProse.toString())
           }
         }, { isRestore: true, versionId })
+
+        // Save restored state to persistent storage
+        await storageInterface.save(docId, Y.encodeStateAsUpdate(activeDoc), { flushImmediate: true })
       } else {
         await storageInterface.save(docId, version.binary_state, { flushImmediate: true })
       }

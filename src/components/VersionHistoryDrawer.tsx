@@ -12,6 +12,7 @@ import {
   RefreshCw,
   AlertCircle,
   Sparkles,
+  Check,
 } from 'lucide-react'
 
 interface DocumentVersion {
@@ -44,29 +45,38 @@ export default function VersionHistoryDrawer({
   const [newVersionName, setNewVersionName] = useState('')
   const [isCreating, setIsCreating] = useState(false)
   const [restoringId, setRestoringId] = useState<number | string | null>(null)
+  const [confirmingRestoreId, setConfirmingRestoreId] = useState<number | string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const serverUrl =
     process.env.NEXT_PUBLIC_WS_SERVER_URL?.replace(/^ws/, 'http') || 'http://localhost:1234'
 
-  const fetchVersions = async () => {
+  const fetchVersions = async (showToast = false) => {
     setLoading(true)
     setError(null)
+    const minSpin = new Promise((r) => setTimeout(r, 450))
     try {
-      const res = await fetch(`${serverUrl}/api/documents/${roomName}/versions`)
+      const res = await fetch(`${serverUrl}/api/documents/${roomName}/versions?_t=${Date.now()}`, {
+        cache: 'no-store',
+      })
       if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to fetch versions`)
       const data = await res.json()
       setVersions(data.versions || [])
+      if (showToast) {
+        setSuccessMessage('Version timeline refreshed!')
+        setTimeout(() => setSuccessMessage(null), 2500)
+      }
     } catch (err: any) {
       setError(err.message || 'Unable to reach backend version service')
     } finally {
+      await minSpin
       setLoading(false)
     }
   }
 
   useEffect(() => {
     if (isOpen) {
-      fetchVersions()
+      fetchVersions(false)
     }
   }, [isOpen, roomName])
 
@@ -87,10 +97,11 @@ export default function VersionHistoryDrawer({
         }),
       })
       if (!res.ok) throw new Error('Failed to create checkpoint')
+      const name = newVersionName.trim()
       setNewVersionName('')
-      setSuccessMessage('Checkpoint created!')
+      setSuccessMessage(`Checkpoint "${name}" created!`)
       setTimeout(() => setSuccessMessage(null), 3000)
-      await fetchVersions()
+      await fetchVersions(false)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -99,20 +110,18 @@ export default function VersionHistoryDrawer({
   }
 
   const handleRestore = async (version: DocumentVersion) => {
-    const confirm = window.confirm(
-      `Restore to "${version.version_name}"? All active collaborators will see this version in real time.`
-    )
-    if (!confirm) return
-
     setRestoringId(version.id)
     setError(null)
     try {
       const res = await fetch(`${serverUrl}/api/documents/${roomName}/restore/${version.id}`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
       })
       if (!res.ok) throw new Error('Failed to restore version')
-      setSuccessMessage(`Restored to "${version.version_name}"`)
-      setTimeout(() => setSuccessMessage(null), 3000)
+      setSuccessMessage(`Successfully restored to "${version.version_name}"!`)
+      setConfirmingRestoreId(null)
+      setTimeout(() => setSuccessMessage(null), 3500)
+      await fetchVersions(false)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -138,12 +147,12 @@ export default function VersionHistoryDrawer({
           </div>
           <div className="flex items-center gap-1">
             <button
-              onClick={fetchVersions}
+              onClick={() => fetchVersions(true)}
               disabled={loading}
               className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition cursor-pointer"
               title="Refresh timeline"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-blue-600' : ''}`} />
             </button>
             <button
               onClick={onClose}
@@ -258,15 +267,39 @@ export default function VersionHistoryDrawer({
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleRestore(ver)}
-                    disabled={restoringId === ver.id}
-                    className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 hover:text-white hover:bg-blue-600 bg-blue-50 hover:border-blue-600 border border-blue-200 rounded-lg transition disabled:opacity-50 shrink-0 cursor-pointer shadow-xs"
-                    title="Time-travel restore to this state"
-                  >
-                    <RotateCcw className={`w-3.5 h-3.5 ${restoringId === ver.id ? 'animate-spin' : ''}`} />
-                    <span>Restore</span>
-                  </button>
+                  {confirmingRestoreId === ver.id ? (
+                    <div className="flex items-center gap-1.5 shrink-0 animate-in fade-in">
+                      <button
+                        type="button"
+                        onClick={() => handleRestore(ver)}
+                        disabled={restoringId === ver.id}
+                        className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs transition disabled:opacity-50 cursor-pointer"
+                        title="Confirm and restore document"
+                      >
+                        <Check className={`w-3.5 h-3.5 ${restoringId === ver.id ? 'animate-spin' : ''}`} />
+                        <span>{restoringId === ver.id ? 'Restoring...' : 'Confirm'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmingRestoreId(null)}
+                        disabled={restoringId === ver.id}
+                        className="px-2 py-1 text-xs font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingRestoreId(ver.id)}
+                      disabled={restoringId !== null}
+                      className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 hover:text-white hover:bg-blue-600 bg-blue-50 hover:border-blue-600 border border-blue-200 rounded-lg transition disabled:opacity-50 shrink-0 cursor-pointer shadow-xs"
+                      title="Time-travel restore to this state"
+                    >
+                      <RotateCcw className={`w-3.5 h-3.5 ${restoringId === ver.id ? 'animate-spin' : ''}`} />
+                      <span>Restore</span>
+                    </button>
+                  )}
                 </div>
 
                 <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-mono">

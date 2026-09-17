@@ -7,6 +7,15 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
+import { Extension } from '@tiptap/core'
+import { yUndoPlugin, undo, redo } from 'y-prosemirror'
+
+const YjsHistoryExtension = Extension.create({
+  name: 'yjsHistory',
+  addProseMirrorPlugins() {
+    return [yUndoPlugin()]
+  },
+})
 import {
   Bold,
   Italic,
@@ -96,6 +105,7 @@ function EditorSurface({
       StarterKit.configure({
         history: false,
       }),
+      YjsHistoryExtension,
       Collaboration.configure({
         document: doc,
       }),
@@ -240,20 +250,24 @@ function EditorSurface({
 
         <button
           type="button"
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().undo()}
-          className="p-2 rounded-lg transition disabled:opacity-30 disabled:hover:bg-transparent hover:bg-slate-100 text-slate-600 hover:text-slate-900"
-          title="Undo (CRDT history)"
+          onClick={() => {
+            undo(editor.state, editor.view.dispatch)
+            editor.view.focus()
+          }}
+          className="p-2 rounded-lg transition hover:bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer"
+          title="Undo (Ctrl+Z)"
         >
           <Undo className="w-4 h-4" />
         </button>
 
         <button
           type="button"
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().redo()}
-          className="p-2 rounded-lg transition disabled:opacity-30 disabled:hover:bg-transparent hover:bg-slate-100 text-slate-600 hover:text-slate-900"
-          title="Redo (CRDT history)"
+          onClick={() => {
+            redo(editor.state, editor.view.dispatch)
+            editor.view.focus()
+          }}
+          className="p-2 rounded-lg transition hover:bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer"
+          title="Redo (Ctrl+Y)"
         >
           <Redo className="w-4 h-4" />
         </button>
