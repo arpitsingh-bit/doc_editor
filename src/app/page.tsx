@@ -1,4 +1,4 @@
-import PlainSyncEditor from '@/components/PlainSyncEditor'
+import TipTapCollabEditor from '@/components/TipTapCollabEditor'
 
 export default function Home() {
   return (
@@ -9,17 +9,17 @@ export default function Home() {
             Real-Time Collaborative Document Editor
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            CRDT-powered multi-user editor • Built with Yjs & y-websocket
+            Google-Docs style CRDT editor • TipTap + Yjs + y-websocket
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-200">
-            Stage 1: Plain Sync
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
+            Stage 2: Rich Editor (TipTap)
           </span>
         </div>
       </div>
 
-      <PlainSyncEditor />
+      <TipTapCollabEditor />
     </main>
   )
 }
