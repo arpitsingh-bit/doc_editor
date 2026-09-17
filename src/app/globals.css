@@ -83,6 +83,18 @@
   --color-paper-3:      hsl(44 35% 90%);
   --color-page-surface: hsl(44 100% 98%);
   --color-border:       hsl(40 18% 84%);
+  /* This toggle can be selected while the OS prefers dark mode. Override the
+     dark ink tokens too, otherwise pale text lands on a pale paper surface. */
+  --color-chrome-bg:    hsl(44 100% 99%);
+  --color-chrome-border:hsl(40 18% 84%);
+  --color-ink:          hsl(30 8% 12%);
+  --color-ink-2:        hsl(30 6% 38%);
+  --color-ink-3:        hsl(30 5% 58%);
+  --color-accent:       hsl(20 55% 42%);
+  --color-accent-hover: hsl(20 57% 35%);
+  --color-accent-subtle:hsl(20 45% 93%);
+  --color-accent-text:  hsl(20 55% 35%);
+  --color-focus:        hsl(20 55% 42%);
 }
 
 /* ============================================================
