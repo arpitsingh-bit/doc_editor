@@ -171,17 +171,17 @@ export default function CommentsSidebar({
   const pendingSuggestions = suggestions.filter((s) => s.status === 'pending')
 
   return (
-    <div className="w-80 bg-white border-l border-slate-200 flex flex-col h-full shadow-xs shrink-0 select-none">
+    <div className="w-80 bg-white border-l border-slate-200 flex flex-col h-full shadow-xs shrink-0 select-none text-slate-800">
       {/* Tab Switcher & Mode Toggle */}
-      <div className="p-3 border-b border-slate-200 bg-slate-50/60">
+      <div className="p-3 border-b border-slate-200 bg-slate-50/70">
         <div className="flex items-center justify-between mb-2">
           <div className="flex gap-1 bg-slate-200/70 p-0.5 rounded-lg text-xs font-semibold">
             <button
               onClick={() => setActiveTab('comments')}
               className={`px-2.5 py-1 rounded-md transition ${
                 activeTab === 'comments'
-                  ? 'bg-white text-slate-800 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? 'bg-white text-slate-800 shadow-xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Comments ({openComments.length})
@@ -190,8 +190,8 @@ export default function CommentsSidebar({
               onClick={() => setActiveTab('suggestions')}
               className={`px-2.5 py-1 rounded-md transition ${
                 activeTab === 'suggestions'
-                  ? 'bg-white text-slate-800 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? 'bg-white text-slate-800 shadow-xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Suggestions ({pendingSuggestions.length})
@@ -212,12 +212,12 @@ export default function CommentsSidebar({
           >
             {isSuggestingMode ? (
               <>
-                <span className="text-[11px] text-emerald-600">ON</span>
+                <span className="text-[11px] text-emerald-600 font-mono">ON</span>
                 <ToggleRight className="w-5 h-5 text-emerald-600" />
               </>
             ) : (
               <>
-                <span className="text-[11px] text-slate-500">OFF</span>
+                <span className="text-[11px] text-slate-500 font-mono">OFF</span>
                 <ToggleLeft className="w-5 h-5 text-slate-400" />
               </>
             )}
@@ -226,23 +226,23 @@ export default function CommentsSidebar({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-white">
         {activeTab === 'comments' ? (
           <>
             {/* New Comment Input Box */}
             <form onSubmit={handleAddComment} className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <label className="block text-[11px] font-semibold text-slate-600 mb-1">Add a Comment</label>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1 font-mono uppercase tracking-wider">Add a Comment</label>
               <textarea
                 value={newCommentText}
                 onChange={(e) => setNewCommentText(e.target.value)}
                 placeholder="Give feedback or ask a question..."
-                className="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none h-16"
+                className="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none h-16"
               />
               <div className="mt-2 flex justify-end">
                 <button
                   type="submit"
                   disabled={!newCommentText.trim()}
-                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold text-xs rounded-lg shadow-xs flex items-center gap-1 transition"
+                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-semibold text-xs rounded-lg shadow-xs flex items-center gap-1 transition cursor-pointer"
                 >
                   <Send className="w-3 h-3" />
                   <span>Post</span>
@@ -311,13 +311,13 @@ export default function CommentsSidebar({
                   {comment.replies.length > 0 && (
                     <div className="mt-2.5 pt-2 border-t border-slate-100 space-y-2">
                       {comment.replies.map((reply) => (
-                        <div key={reply.id} className="pl-2 border-l-2 border-slate-200">
+                        <div key={reply.id} className="pl-2 border-l-2 border-blue-500 bg-slate-50 p-2 rounded-r">
                           <div className="flex items-center gap-1 mb-0.5">
                             <span
                               className="w-2 h-2 rounded-full"
                               style={{ backgroundColor: reply.authorColor }}
                             />
-                            <span className="font-semibold text-[11px] text-slate-700">{reply.authorName}</span>
+                            <span className="font-semibold text-[11px] text-slate-800">{reply.authorName}</span>
                           </div>
                           <p className="text-[11px] text-slate-600 leading-normal">{reply.text}</p>
                         </div>
@@ -335,7 +335,7 @@ export default function CommentsSidebar({
                           setReplyTexts((prev) => ({ ...prev, [comment.id]: e.target.value }))
                         }
                         placeholder="Reply..."
-                        className="flex-1 text-xs px-2 py-1 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50"
+                        className="flex-1 text-xs px-2.5 py-1 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 text-slate-800 placeholder:text-slate-400"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
                             e.preventDefault()
@@ -347,7 +347,7 @@ export default function CommentsSidebar({
                         type="button"
                         onClick={() => handleAddReply(comment.id)}
                         disabled={!replyTexts[comment.id]?.trim()}
-                        className="px-2 py-1 bg-slate-100 hover:bg-blue-600 hover:text-white disabled:opacity-50 text-slate-600 rounded-md text-xs transition"
+                        className="px-2.5 py-1 bg-slate-100 hover:bg-blue-600 hover:text-white disabled:opacity-40 text-slate-600 rounded-md text-xs transition cursor-pointer"
                       >
                         Reply
                       </button>
@@ -374,9 +374,9 @@ export default function CommentsSidebar({
                   key={sugg.id}
                   className={`p-3 rounded-xl border transition ${
                     sugg.status === 'accepted'
-                      ? 'bg-emerald-50/50 border-emerald-200'
+                      ? 'bg-emerald-50/60 border-emerald-200'
                       : sugg.status === 'rejected'
-                      ? 'bg-rose-50/50 border-rose-200 opacity-60'
+                      ? 'bg-rose-50/60 border-rose-200 opacity-60'
                       : 'bg-white border-slate-200 shadow-xs'
                   }`}
                 >
@@ -389,7 +389,7 @@ export default function CommentsSidebar({
                       <span className="font-semibold text-xs text-slate-800">{sugg.authorName}</span>
                     </div>
                     <span
-                      className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${
+                      className={`text-[10px] font-bold font-mono uppercase px-1.5 py-0.5 rounded ${
                         sugg.type === 'insert'
                           ? 'bg-emerald-100 text-emerald-700'
                           : 'bg-rose-100 text-rose-700'
@@ -400,7 +400,7 @@ export default function CommentsSidebar({
                   </div>
 
                   {/* Diff Content Preview */}
-                  <div className="p-2 rounded bg-slate-50 border border-slate-100 text-xs font-mono my-2">
+                  <div className="p-2 rounded bg-slate-50 border border-slate-200 text-xs font-mono my-2">
                     {sugg.type === 'insert' ? (
                       <span className="text-emerald-700 bg-emerald-100/60 px-1 py-0.5 rounded">
                         +{sugg.text}
@@ -418,7 +418,7 @@ export default function CommentsSidebar({
                       <button
                         type="button"
                         onClick={() => handleReject(sugg)}
-                        className="px-2 py-1 rounded text-xs font-medium text-rose-600 hover:bg-rose-50 border border-rose-200 flex items-center gap-1 transition"
+                        className="px-2 py-1 rounded text-xs font-medium text-rose-600 hover:bg-rose-50 border border-rose-200 flex items-center gap-1 transition cursor-pointer"
                       >
                         <X className="w-3 h-3" />
                         <span>Reject</span>
@@ -426,14 +426,14 @@ export default function CommentsSidebar({
                       <button
                         type="button"
                         onClick={() => handleAccept(sugg)}
-                        className="px-2.5 py-1 rounded text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1 transition shadow-xs"
+                        className="px-2.5 py-1 rounded text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1 transition shadow-xs cursor-pointer"
                       >
                         <Check className="w-3 h-3" />
                         <span>Accept</span>
                       </button>
                     </div>
                   ) : (
-                    <div className="text-[11px] font-medium text-slate-500 text-right capitalize">
+                    <div className="text-[11px] font-medium font-mono text-slate-500 text-right capitalize">
                       Status: {sugg.status}
                     </div>
                   )}

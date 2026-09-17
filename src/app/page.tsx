@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-slate-100 flex items-center justify-center text-slate-500 font-medium">
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-500 font-medium">
           Loading Collaborative Document Editor...
         </div>
       }

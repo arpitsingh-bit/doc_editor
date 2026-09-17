@@ -34,6 +34,8 @@ import {
   History,
   MessageSquare,
   Activity,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import Link from 'next/link'
 import VersionHistoryDrawer from './VersionHistoryDrawer'
@@ -136,10 +138,14 @@ function EditorSurface({
     return (
       <div className="p-16 text-center text-slate-400 flex flex-col items-center justify-center gap-3">
         <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
-        <span>Initializing TipTap collaborative canvas...</span>
+        <span className="font-mono text-xs">Initializing TipTap collaborative canvas...</span>
       </div>
     )
   }
+
+  const btnActive = 'bg-blue-50 text-blue-600 font-bold border border-blue-200 shadow-xs'
+  const btnInactive = 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent'
+  const dividerClass = 'h-5 w-[1px] bg-slate-200 mx-1.5'
 
   return (
     <div>
@@ -148,7 +154,7 @@ function EditorSurface({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('bold') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('bold') ? btnActive : btnInactive}`}
           title="Bold (Ctrl+B)"
         >
           <Bold className="w-4 h-4" />
@@ -157,7 +163,7 @@ function EditorSurface({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('italic') ? 'bg-blue-50 text-blue-600' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('italic') ? btnActive : btnInactive}`}
           title="Italic (Ctrl+I)"
         >
           <Italic className="w-4 h-4" />
@@ -166,7 +172,7 @@ function EditorSurface({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('strike') ? 'bg-blue-50 text-blue-600' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('strike') ? btnActive : btnInactive}`}
           title="Strikethrough"
         >
           <Strikethrough className="w-4 h-4" />
@@ -175,18 +181,18 @@ function EditorSurface({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleCode().run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('code') ? 'bg-blue-50 text-blue-600' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('code') ? btnActive : btnInactive}`}
           title="Inline Code"
         >
           <Code className="w-4 h-4" />
         </button>
 
-        <div className="h-5 w-[1px] bg-slate-200 mx-1.5"></div>
+        <div className={dividerClass}></div>
 
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('heading', { level: 1 }) ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('heading', { level: 1 }) ? btnActive : btnInactive}`}
           title="Heading 1"
         >
           <Heading1 className="w-4 h-4" />
@@ -195,18 +201,18 @@ function EditorSurface({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('heading', { level: 2 }) ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('heading', { level: 2 }) ? btnActive : btnInactive}`}
           title="Heading 2"
         >
           <Heading2 className="w-4 h-4" />
         </button>
 
-        <div className="h-5 w-[1px] bg-slate-200 mx-1.5"></div>
+        <div className={dividerClass}></div>
 
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('bulletList') ? 'bg-blue-50 text-blue-600' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('bulletList') ? btnActive : btnInactive}`}
           title="Bullet List"
         >
           <List className="w-4 h-4" />
@@ -215,7 +221,7 @@ function EditorSurface({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('orderedList') ? 'bg-blue-50 text-blue-600' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('orderedList') ? btnActive : btnInactive}`}
           title="Ordered List"
         >
           <ListOrdered className="w-4 h-4" />
@@ -224,19 +230,19 @@ function EditorSurface({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={`p-2 rounded-md hover:bg-slate-100 transition ${editor.isActive('blockquote') ? 'bg-blue-50 text-blue-600' : 'text-slate-600'}`}
+          className={`p-2 rounded-lg transition ${editor.isActive('blockquote') ? btnActive : btnInactive}`}
           title="Blockquote"
         >
           <Quote className="w-4 h-4" />
         </button>
 
-        <div className="h-5 w-[1px] bg-slate-200 mx-1.5"></div>
+        <div className={dividerClass}></div>
 
         <button
           type="button"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
-          className="p-2 rounded-md hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent text-slate-600 transition"
+          className="p-2 rounded-lg transition disabled:opacity-30 disabled:hover:bg-transparent hover:bg-slate-100 text-slate-600 hover:text-slate-900"
           title="Undo (CRDT history)"
         >
           <Undo className="w-4 h-4" />
@@ -246,7 +252,7 @@ function EditorSurface({
           type="button"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
-          className="p-2 rounded-md hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent text-slate-600 transition"
+          className="p-2 rounded-lg transition disabled:opacity-30 disabled:hover:bg-transparent hover:bg-slate-100 text-slate-600 hover:text-slate-900"
           title="Redo (CRDT history)"
         >
           <Redo className="w-4 h-4" />
@@ -255,7 +261,7 @@ function EditorSurface({
 
       {/* Editor Content Surface */}
       <div
-        className="min-h-[500px] bg-white cursor-text"
+        className="min-h-[520px] cursor-text bg-white text-slate-800"
         onClick={() => editor.commands.focus()}
       >
         <EditorContent editor={editor} />
@@ -295,6 +301,7 @@ export default function CollaborativeEditor({
   const [showCommentsSidebar, setShowCommentsSidebar] = useState<boolean>(false)
   const [isSuggestingMode, setIsSuggestingMode] = useState<boolean>(false)
   const [isSimulatingOffline, setIsSimulatingOffline] = useState<boolean>(false)
+  const [isLightPaper, setIsLightPaper] = useState<boolean>(false)
   const [copiedLink, setCopiedLink] = useState<boolean>(false)
   const [copiedPitch, setCopiedPitch] = useState<boolean>(false)
   const [docStats, setDocStats] = useState<{ words: number; chars: number }>({ words: 0, chars: 0 })
@@ -424,7 +431,7 @@ export default function CollaborativeEditor({
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-100 text-slate-900">
+    <div className="flex flex-col min-h-screen bg-slate-100 text-slate-900 font-sans">
       {/* Top Navbar */}
       <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 shadow-xs">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
@@ -439,24 +446,27 @@ export default function CollaborativeEditor({
                 value={docTitle}
                 onChange={handleTitleChange}
                 placeholder="Untitled Document"
-                className="text-lg font-semibold text-slate-800 bg-transparent hover:bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1.5 py-0.5 transition w-64 sm:w-80 truncate"
+                className="text-lg font-bold text-slate-800 bg-transparent hover:bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1.5 py-0.5 transition w-64 sm:w-80 truncate border border-transparent hover:border-slate-300"
                 title="Click to edit document title (collaboratively synced in real-time)"
               />
-              <div className="flex items-center gap-2 text-xs text-slate-500 px-1.5">
-                <span className="font-mono">room: {roomName}</span>
+              <div className="flex items-center gap-2 text-xs font-mono text-slate-500 px-1.5 mt-0.5">
+                <span>room: {roomName}</span>
                 <span>•</span>
-                <span className="text-emerald-600 font-medium">Auto-saved to disk</span>
+                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1 font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Auto-saved to disk
+                </span>
               </div>
             </div>
           </div>
 
           {/* Right: Actions, Users & Status */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Demo Script Guide Button */}
             <button
               type="button"
               onClick={() => setShowDemoModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs hover:from-blue-700 hover:to-indigo-700 transition cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs transition cursor-pointer"
               title="Open Hackathon Demo Script"
             >
               <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
@@ -470,7 +480,7 @@ export default function CollaborativeEditor({
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border shadow-xs transition cursor-pointer ${
                 isSimulatingOffline
                   ? 'bg-amber-500 text-white border-amber-600 hover:bg-amber-600 animate-pulse'
-                  : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
               }`}
               title="Test Stage 5: Simulate network disconnect & delta recovery"
             >
@@ -552,7 +562,11 @@ export default function CollaborativeEditor({
             <button
               type="button"
               onClick={() => setShowSidebar(!showSidebar)}
-              className={`p-1.5 rounded-lg border transition cursor-pointer ${showSidebar ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'}`}
+              className={`p-1.5 rounded-lg border transition cursor-pointer ${
+                showSidebar
+                  ? 'bg-blue-50 border-blue-200 text-blue-600'
+                  : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'
+              }`}
               title="Toggle Collaborators Sidebar"
             >
               <SidebarIcon className="w-4 h-4" />
@@ -624,7 +638,7 @@ export default function CollaborativeEditor({
       {/* Main Workspace Layout */}
       <div className="flex-1 flex overflow-hidden">
         {/* Document Editor Canvas Area */}
-        <div className="flex-1 overflow-y-auto py-8 px-4 sm:px-8 flex justify-center">
+        <div className="flex-1 overflow-y-auto py-8 px-4 sm:px-8 flex justify-center bg-slate-100">
           <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden mb-16 transition-all">
             {provider ? (
               <EditorSurface
@@ -634,19 +648,22 @@ export default function CollaborativeEditor({
                 onStatsUpdate={setDocStats}
               />
             ) : (
-              <div className="p-16 text-center text-slate-400">Connecting to collaborative relay...</div>
+              <div className="p-16 text-center text-slate-400 flex flex-col items-center justify-center gap-3">
+                <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
+                <span className="font-mono text-xs">Connecting to collaborative relay...</span>
+              </div>
             )}
           </div>
         </div>
 
         {/* Collaborators & Stats Sidebar */}
         {showSidebar && (
-          <aside className="w-80 border-l border-slate-200 bg-white p-5 flex flex-col gap-6 shadow-sm overflow-y-auto">
+          <aside className="w-80 border-l border-slate-200 bg-white p-5 flex flex-col gap-6 shadow-sm overflow-y-auto text-slate-800">
             {/* Active Collaborators Section */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-blue-600" />
                   Collaborators ({collaborators.length})
                 </h3>
                 <span className="flex h-2 w-2 relative">
@@ -692,16 +709,16 @@ export default function CollaborativeEditor({
 
             {/* Document Metrics */}
             <div className="border-t border-slate-200 pt-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 font-mono">
                 Document Metrics
               </h3>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <div className="text-slate-400 text-[10px] uppercase font-bold">Words</div>
+                  <div className="text-slate-400 text-[10px] uppercase font-bold font-mono">Words</div>
                   <div className="text-base font-semibold text-slate-800">{docStats.words}</div>
                 </div>
                 <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <div className="text-slate-400 text-[10px] uppercase font-bold">Characters</div>
+                  <div className="text-slate-400 text-[10px] uppercase font-bold font-mono">Characters</div>
                   <div className="text-base font-semibold text-slate-800">{docStats.chars}</div>
                 </div>
               </div>
@@ -709,7 +726,7 @@ export default function CollaborativeEditor({
 
             {/* System Connection Details */}
             <div className="border-t border-slate-200 pt-4 text-xs space-y-2 text-slate-600">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 font-mono">
                 CRDT Sync Engine
               </h3>
               <div className="flex justify-between py-1 border-b border-slate-100 text-slate-500">
@@ -722,16 +739,16 @@ export default function CollaborativeEditor({
               </div>
               <div className="flex justify-between py-1 border-b border-slate-100 text-slate-500">
                 <span>Persistence</span>
-                <span className="text-emerald-600 font-semibold">Binary Snapshot</span>
+                <span className="text-emerald-600 font-semibold font-mono">Binary Snapshot</span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-100 text-slate-500">
                 <span>Delta Sync</span>
-                <span className="text-blue-600 font-semibold">State Vector</span>
+                <span className="text-blue-600 font-semibold font-mono">State Vector</span>
               </div>
               {lastSyncTime && (
-                <div className="flex justify-between py-1 text-slate-500">
+                <div className="flex justify-between py-1 text-slate-500 font-mono">
                   <span>Last Sync</span>
-                  <span className="font-mono text-slate-800">{lastSyncTime}</span>
+                  <span className="text-slate-800">{lastSyncTime}</span>
                 </div>
               )}
             </div>
