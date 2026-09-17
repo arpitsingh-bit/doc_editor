@@ -31,7 +31,9 @@ import {
   Copy,
   Sidebar as SidebarIcon,
   Sparkles,
+  History,
 } from 'lucide-react'
+import VersionHistoryDrawer from './VersionHistoryDrawer'
 
 const CURSOR_COLORS = [
   '#ef4444', // Red
@@ -285,6 +287,7 @@ export default function CollaborativeEditor({
   const [showUserModal, setShowUserModal] = useState<boolean>(false)
   const [showDemoModal, setShowDemoModal] = useState<boolean>(false)
   const [showSidebar, setShowSidebar] = useState<boolean>(true)
+  const [showVersionHistory, setShowVersionHistory] = useState<boolean>(false)
   const [isSimulatingOffline, setIsSimulatingOffline] = useState<boolean>(false)
   const [copiedLink, setCopiedLink] = useState<boolean>(false)
   const [copiedPitch, setCopiedPitch] = useState<boolean>(false)
@@ -487,6 +490,17 @@ export default function CollaborativeEditor({
             >
               {copiedLink ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5 text-slate-500" />}
               <span className="hidden sm:inline">{copiedLink ? 'Copied!' : 'Share'}</span>
+            </button>
+
+            {/* Version History Button (Stage D) */}
+            <button
+              type="button"
+              onClick={() => setShowVersionHistory(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-xs transition cursor-pointer"
+              title="View Version History & Time-Travel Restore"
+            >
+              <History className="w-3.5 h-3.5 text-blue-600" />
+              <span className="hidden sm:inline">History</span>
             </button>
 
             {/* Current User Pill */}
@@ -782,6 +796,14 @@ export default function CollaborativeEditor({
           </div>
         </div>
       )}
+
+      {/* Stage D: Version History Drawer */}
+      <VersionHistoryDrawer
+        isOpen={showVersionHistory}
+        onClose={() => setShowVersionHistory(false)}
+        roomName={roomName}
+        currentUser={currentUser}
+      />
     </div>
   )
 }

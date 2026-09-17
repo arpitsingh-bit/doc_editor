@@ -156,11 +156,41 @@ async function bootstrap() {
         return
       }
 
-      // Non-destructive restore: apply version state as an update to active Y.Doc
+      // Non-destructive forward-transaction restore:
+      // Preserves Y.Doc state vector continuity and multi-client connections
       const Y = require('yjs')
       let activeDoc = docs.get(docId)
       if (activeDoc) {
-        Y.applyUpdate(activeDoc, version.binary_state)
+        const histDoc = new Y.Doc()
+        Y.applyUpdate(histDoc, version.binary_state)
+
+        activeDoc.transact(() => {
+          // 1. Restore document title
+          const curTitle = activeDoc.getText('title')
+          const histTitle = histDoc.getText('title')
+          if (curTitle && histTitle) {
+            curTitle.delete(0, curTitle.length)
+            curTitle.insert(0, histTitle.toString())
+          }
+
+          // 2. Restore ProseMirror XML fragment
+          const curFrag = activeDoc.getXmlFragment('default')
+          const histFrag = histDoc.getXmlFragment('default')
+          if (curFrag && histFrag && histFrag.length > 0) {
+            curFrag.delete(0, curFrag.length)
+            for (let i = 0; i < histFrag.length; i++) {
+              curFrag.push([histFrag.get(i).clone()])
+            }
+          }
+
+          // 3. Restore plain text prose if used
+          const curProse = activeDoc.getText('prose')
+          const histProse = histDoc.getText('prose')
+          if (curProse && histProse && histProse.length > 0) {
+            curProse.delete(0, curProse.length)
+            curProse.insert(0, histProse.toString())
+          }
+        }, { isRestore: true, versionId })
       } else {
         await storageInterface.save(docId, version.binary_state, { flushImmediate: true })
       }
