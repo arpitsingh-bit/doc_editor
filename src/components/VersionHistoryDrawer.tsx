@@ -15,13 +15,14 @@ import {
 } from 'lucide-react'
 
 interface DocumentVersion {
-  id: number
+  id: number | string
   document_id: string
   version_name: string
   author_name: string
   author_color: string
   created_at: string
   bytes: number
+  is_named?: boolean
 }
 
 interface VersionHistoryDrawerProps {
@@ -42,7 +43,7 @@ export default function VersionHistoryDrawer({
   const [error, setError] = useState<string | null>(null)
   const [newVersionName, setNewVersionName] = useState('')
   const [isCreating, setIsCreating] = useState(false)
-  const [restoringId, setRestoringId] = useState<number | null>(null)
+  const [restoringId, setRestoringId] = useState<number | string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const serverUrl =
@@ -132,7 +133,7 @@ export default function VersionHistoryDrawer({
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 text-sm">Version History & Audit</h3>
-              <p className="text-xs text-slate-500 font-mono">Non-destructive time-travel restore</p>
+              <p className="text-xs text-slate-500 font-mono">Continuous auto-save • Time-travel restore</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -172,15 +173,15 @@ export default function VersionHistoryDrawer({
         {/* Create Checkpoint Form */}
         <form onSubmit={handleCreateCheckpoint} className="p-4 border-b border-slate-200 bg-slate-50/60">
           <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center justify-between">
-            <span className="font-mono uppercase tracking-wider text-[11px]">Create Named Checkpoint</span>
-            <span className="text-[10px] text-blue-600 font-mono font-medium">Saves to PostgreSQL</span>
+            <span className="font-mono uppercase tracking-wider text-[11px]">Name Milestone (Optional)</span>
+            <span className="text-[10px] text-emerald-600 font-mono font-medium">All edits auto-saved below</span>
           </label>
           <div className="flex gap-2">
             <input
               type="text"
               value={newVersionName}
               onChange={(e) => setNewVersionName(e.target.value)}
-              placeholder="e.g. v1.2 - Before design review"
+              placeholder="e.g. v1.2 - Milestone Before Review"
               className="flex-1 px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 placeholder:text-slate-400 transition"
               disabled={isCreating}
             />
@@ -205,9 +206,9 @@ export default function VersionHistoryDrawer({
           ) : versions.length === 0 ? (
             <div className="py-12 text-center text-xs text-slate-500">
               <History className="w-8 h-8 mx-auto text-slate-300 mb-2" />
-              <p className="font-medium text-slate-600">No checkpoints recorded yet.</p>
+              <p className="font-medium text-slate-600">No revisions recorded yet.</p>
               <p className="text-[11px] text-slate-400 mt-1">
-                Use the box above to create your first named revision checkpoint.
+                Type in the editor — revisions are continuously auto-saved here automatically.
               </p>
             </div>
           ) : (
@@ -218,13 +219,22 @@ export default function VersionHistoryDrawer({
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-semibold text-slate-900 text-xs">
                         {ver.version_name}
                       </span>
                       {idx === 0 && (
                         <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 rounded">
-                          Latest
+                          Current
+                        </span>
+                      )}
+                      {ver.is_named ? (
+                        <span className="px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60 rounded">
+                          Named
+                        </span>
+                      ) : (
+                        <span className="px-1.5 py-0.5 text-[10px] font-mono font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60 rounded">
+                          Auto-saved
                         </span>
                       )}
                     </div>

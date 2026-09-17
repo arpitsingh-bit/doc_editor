@@ -211,51 +211,130 @@ class PostgresStore {
   }
 
   async listVersions(documentId) {
+    let namedVersions = []
+    let autoSnapshots = []
+
     if (this.isLivePostgres && this.pool) {
-      const res = await this.pool.query(
+      // 1. Fetch named checkpoints
+      const resVersions = await this.pool.query(
         `SELECT id, document_id, version_name, author_name, author_color, created_at, octet_length(binary_state) as bytes
          FROM document_versions
          WHERE document_id = $1
          ORDER BY created_at DESC`,
         [documentId]
       )
-      return res.rows
+      namedVersions = resVersions.rows.map((r) => ({ ...r, is_named: true }))
+
+      // 2. Fetch periodic auto-saved snapshots (latest 15)
+      const resSnapshots = await this.pool.query(
+        `SELECT id, document_id, created_at, octet_length(binary_state) as bytes
+         FROM document_snapshots
+         WHERE document_id = $1
+         ORDER BY created_at DESC LIMIT 15`,
+        [documentId]
+      )
+      autoSnapshots = resSnapshots.rows.map((r) => ({
+        id: `snap_${r.id}`,
+        document_id: r.document_id,
+        version_name: 'Auto-saved Revision',
+        author_name: 'Continuous Auto-Save',
+        author_color: '#10b981',
+        created_at: r.created_at,
+        bytes: r.bytes,
+        is_named: false,
+      }))
+    } else {
+      // Embedded Engine
+      namedVersions = this.embeddedData.document_versions
+        .filter((v) => v.document_id === documentId)
+        .map((v) => ({
+          id: v.id,
+          document_id: v.document_id,
+          version_name: v.version_name,
+          author_name: v.author_name,
+          author_color: v.author_color,
+          created_at: v.created_at,
+          bytes: v.bytes,
+          is_named: true,
+        }))
+
+      autoSnapshots = this.embeddedData.document_snapshots
+        .filter((s) => s.document_id === documentId)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 15)
+        .map((s) => ({
+          id: `snap_${s.id}`,
+          document_id: s.document_id,
+          version_name: 'Auto-saved Revision',
+          author_name: 'Continuous Auto-Save',
+          author_color: '#10b981',
+          created_at: s.created_at,
+          bytes: s.bytes || (s.binary_state_base64 ? Buffer.from(s.binary_state_base64, 'base64').length : 0),
+          is_named: false,
+        }))
     }
 
-    return this.embeddedData.document_versions
-      .filter((v) => v.document_id === documentId)
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      .map((v) => ({
-        id: v.id,
-        document_id: v.document_id,
-        version_name: v.version_name,
-        author_name: v.author_name,
-        author_color: v.author_color,
-        created_at: v.created_at,
-        bytes: v.bytes,
-      }))
+    // Merge both and sort newest first
+    const combined = [...namedVersions, ...autoSnapshots].sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    )
+    return combined
   }
 
   async getVersion(versionId) {
+    const idStr = String(versionId)
+    const isSnapshot = idStr.startsWith('snap_')
+    const rawId = isSnapshot ? parseInt(idStr.replace('snap_', ''), 10) : parseInt(idStr, 10)
+
     if (this.isLivePostgres && this.pool) {
-      const res = await this.pool.query(
-        `SELECT * FROM document_versions WHERE id = $1`,
-        [versionId]
-      )
-      if (res.rows.length > 0) {
-        return {
-          ...res.rows[0],
-          binary_state: new Uint8Array(res.rows[0].binary_state),
+      if (isSnapshot) {
+        const res = await this.pool.query(
+          `SELECT * FROM document_snapshots WHERE id = $1`,
+          [rawId]
+        )
+        if (res.rows.length > 0) {
+          return {
+            id: `snap_${res.rows[0].id}`,
+            document_id: res.rows[0].document_id,
+            version_name: 'Auto-saved Revision',
+            binary_state: new Uint8Array(res.rows[0].binary_state),
+            created_at: res.rows[0].created_at,
+          }
+        }
+      } else {
+        const res = await this.pool.query(
+          `SELECT * FROM document_versions WHERE id = $1`,
+          [rawId]
+        )
+        if (res.rows.length > 0) {
+          return {
+            ...res.rows[0],
+            binary_state: new Uint8Array(res.rows[0].binary_state),
+          }
         }
       }
       return null
     }
 
-    const v = this.embeddedData.document_versions.find((item) => item.id === parseInt(versionId, 10))
-    if (v) {
-      return {
-        ...v,
-        binary_state: new Uint8Array(Buffer.from(v.binary_state_base64, 'base64')),
+    // Embedded Engine
+    if (isSnapshot) {
+      const s = this.embeddedData.document_snapshots.find((item) => item.id === rawId)
+      if (s) {
+        return {
+          id: `snap_${s.id}`,
+          document_id: s.document_id,
+          version_name: 'Auto-saved Revision',
+          binary_state: new Uint8Array(Buffer.from(s.binary_state_base64, 'base64')),
+          created_at: s.created_at,
+        }
+      }
+    } else {
+      const v = this.embeddedData.document_versions.find((item) => item.id === rawId)
+      if (v) {
+        return {
+          ...v,
+          binary_state: new Uint8Array(Buffer.from(v.binary_state_base64, 'base64')),
+        }
       }
     }
     return null
