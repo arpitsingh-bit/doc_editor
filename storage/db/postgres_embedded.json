@@ -4,7 +4,7 @@
       "id": "hackathon-document",
       "title": "hackathon-document",
       "created_at": "2026-09-17T19:16:56.693Z",
-      "updated_at": "2026-09-17T19:25:42.928Z",
+      "updated_at": "2026-09-17T19:29:12.945Z",
       "owner_id": "anonymous"
     },
     "master-test-room-1789652554984": {
@@ -89,6 +89,34 @@
       "title": "collab-comments-test-1789673143171",
       "created_at": "2026-09-17T19:25:44.402Z",
       "updated_at": "2026-09-17T19:25:44.403Z",
+      "owner_id": "anonymous"
+    },
+    "chaos-room-1789673170224": {
+      "id": "chaos-room-1789673170224",
+      "title": "chaos-room-1789673170224",
+      "created_at": "2026-09-17T19:26:11.453Z",
+      "updated_at": "2026-09-17T19:26:12.664Z",
+      "owner_id": "anonymous"
+    },
+    "latency-harness-1789673199661": {
+      "id": "latency-harness-1789673199661",
+      "title": "latency-harness-1789673199661",
+      "created_at": "2026-09-17T19:26:40.479Z",
+      "updated_at": "2026-09-17T19:26:41.692Z",
+      "owner_id": "anonymous"
+    },
+    "latency-harness-1789673217072": {
+      "id": "latency-harness-1789673217072",
+      "title": "latency-harness-1789673217072",
+      "created_at": "2026-09-17T19:26:57.300Z",
+      "updated_at": "2026-09-17T19:26:57.301Z",
+      "owner_id": "anonymous"
+    },
+    "master-test-room-1789673350700": {
+      "id": "master-test-room-1789673350700",
+      "title": "master-test-room-1789673350700",
+      "created_at": "2026-09-17T19:29:11.523Z",
+      "updated_at": "2026-09-17T19:29:12.944Z",
       "owner_id": "anonymous"
     }
   },
@@ -505,6 +533,202 @@
       "binary_state_base64": "AgXUh8SQCwAhAQhjb21tZW50cwxjLXRocmVhZC0xMDEBqPSp8+UHAAF2BwJpZHcMYy10aHJlYWQtMTAxCmF1dGhvck5hbWV3DkFsaWNlIFJldmlld2VyC2F1dGhvckNvbG9ydwcjM2I4MmY2BHRleHR3PVBsZWFzZSBjbGFyaWZ5IHdoZXRoZXIgUmVkaXMgUHViL1N1YiBoYW5kbGVzIGVjaG8gcHJldmVudGlvbi4JY3JlYXRlZEF0e0J6Cw1PuRAACHJlc29sdmVkeAdyZXBsaWVzdQF2BQJpZHcJcmVwbHktMjAxCmF1dGhvck5hbWV3CkJvYiBBdXRob3ILYXV0aG9yQ29sb3J3ByNlZjQ0NDQEdGV4dHdCQ29uZmlybWVkLiBFY2hvIHByZXZlbnRpb24gaXMgZW5mb3JjZWQgdmlhIHVuaXF1ZSBpbnN0YW5jZUlkIHRhZ3MuCWNyZWF0ZWRBdHtCegsNT7kwACEBC3N1Z2dlc3Rpb25zCHN1Z2ctMzAxAQEBB2RlZmF1bHQBACMD9Knz5QcAodSHxJALAAGo1IfEkAsCAXYHAmlkdwhzdWdnLTMwMQR0eXBldwZpbnNlcnQKYXV0aG9yTmFtZXcOQWxpY2UgUmV2aWV3ZXILYXV0aG9yQ29sb3J3ByMzYjgyZjYEdGV4dHcmTXVsdGktcmVnaW9uIGRpc2FzdGVyIHJlY292ZXJ5IHN0YW5kYnkJY3JlYXRlZEF0e0J6Cw1PuUAABnN0YXR1c3cIYWNjZXB0ZWQoAQhjb21tZW50cwxjLWlzb2xhdGVkLTIBdgcCaWR3DGMtaXNvbGF0ZWQtMgphdXRob3JOYW1ldwNCb2ILYXV0aG9yQ29sb3J3ByNlZjQ0NDQEdGV4dHciQ29tbWVudCBtYWRlIHdoaWxlIEFsaWNlIGlzIHR5cGluZwljcmVhdGVkQXR7QnoLDU/SkAAIcmVzb2x2ZWR5B3JlcGxpZXN1AALUh8SQCwIAAQIl9Knz5QcBAAE=",
       "created_at": "2026-09-17T19:25:44.403Z",
       "bytes": 764
+    },
+    {
+      "id": 60,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:25:57.930Z",
+      "bytes": 148
+    },
+    {
+      "id": 61,
+      "document_id": "chaos-room-1789673170224",
+      "binary_state_base64": "BALjyOS2DgDEnO/ZcAec79lwCAVbRGFuYcTjyOS2DgSc79lwCAUtcjRdIAKEvqWLBwDBpYzhyQMGpYzhyQMHB8SEvqWLBwaljOHJAwcEcjldIAaljOHJAwDE48jktg4E48jktg4FAltDwaWM4ckDAePI5LYOBQHBpYzhyQMC48jktg4FBMSljOHJAwbjyOS2DgUBZcGljOHJAwfjyOS2DgUExKWM4ckDC+PI5LYOBQEgEZzv2XAAAQEJY2hhb3NUZXh0BISc79lwAwEthJzv2XAEA3IxXYSc79lwBwEgwZzv2XAEnO/ZcAUIxJzv2XAQnO/ZcAUBIMTjyOS2DgSljOHJAwAFW0JvYi3BnO/ZcBaljOHJAwABxJzv2XAXpYzhyQMABDE1XSDEnO/ZcBac79lwFwFbxJzv2XAcnO/ZcBcGQm9iLXIxwZzv2XAinO/ZcBcDxIS+pYsHBoS+pYsHBwhbQm9iLXIxOMSc79lwLYS+pYsHBwJdIMSljOHJAwKljOHJAwMKW0JvYi1yMjBdIMSc79lwLZzv2XAuCltCb2ItcjIyXSDEnO/ZcByc79lwHQpbQm9iLXIyNF0gA4S+pYsHAQAHpYzhyQMCAgUIBJzv2XAEAAQJCBcBIwM=",
+      "created_at": "2026-09-17T19:26:11.453Z",
+      "bytes": 476
+    },
+    {
+      "id": 62,
+      "document_id": "chaos-room-1789673170224",
+      "binary_state_base64": "BALjyOS2DgDEnO/ZcAec79lwCAVbRGFuYcTjyOS2DgSc79lwCAUtcjRdIAKEvqWLBwDBpYzhyQMGpYzhyQMHB8SEvqWLBwaljOHJAwcEcjldIAaljOHJAwDE48jktg4E48jktg4FAltDwaWM4ckDAePI5LYOBQHBpYzhyQMC48jktg4FBMSljOHJAwbjyOS2DgUBZcGljOHJAwfjyOS2DgUExKWM4ckDC+PI5LYOBQEgEZzv2XAAAQEJY2hhb3NUZXh0BISc79lwAwEthJzv2XAEA3IxXYSc79lwBwEgwZzv2XAEnO/ZcAUIxJzv2XAQnO/ZcAUBIMTjyOS2DgSljOHJAwAFW0JvYi3BnO/ZcBaljOHJAwABxJzv2XAXpYzhyQMABDE1XSDEnO/ZcBac79lwFwFbxJzv2XAcnO/ZcBcGQm9iLXIxwZzv2XAinO/ZcBcDxIS+pYsHBoS+pYsHBwhbQm9iLXIxOMSc79lwLYS+pYsHBwJdIMSljOHJAwKljOHJAwMKW0JvYi1yMjBdIMSc79lwLZzv2XAuCltCb2ItcjIyXSDEnO/ZcByc79lwHQpbQm9iLXIyNF0gA4S+pYsHAQAHpYzhyQMCAgUIBJzv2XAEAAQJCBcBIwM=",
+      "created_at": "2026-09-17T19:26:12.663Z",
+      "bytes": 476
+    },
+    {
+      "id": 63,
+      "document_id": "chaos-room-1789673170224",
+      "binary_state_base64": "BALjyOS2DgDEnO/ZcAec79lwCAVbRGFuYcTjyOS2DgSc79lwCAUtcjRdIAKEvqWLBwDBpYzhyQMGpYzhyQMHB8SEvqWLBwaljOHJAwcEcjldIAaljOHJAwDE48jktg4E48jktg4FAltDwaWM4ckDAePI5LYOBQHBpYzhyQMC48jktg4FBMSljOHJAwbjyOS2DgUBZcGljOHJAwfjyOS2DgUExKWM4ckDC+PI5LYOBQEgEZzv2XAAAQEJY2hhb3NUZXh0BISc79lwAwEthJzv2XAEA3IxXYSc79lwBwEgwZzv2XAEnO/ZcAUIxJzv2XAQnO/ZcAUBIMTjyOS2DgSljOHJAwAFW0JvYi3BnO/ZcBaljOHJAwABxJzv2XAXpYzhyQMABDE1XSDEnO/ZcBac79lwFwFbxJzv2XAcnO/ZcBcGQm9iLXIxwZzv2XAinO/ZcBcDxIS+pYsHBoS+pYsHBwhbQm9iLXIxOMSc79lwLYS+pYsHBwJdIMSljOHJAwKljOHJAwMKW0JvYi1yMjBdIMSc79lwLZzv2XAuCltCb2ItcjIyXSDEnO/ZcByc79lwHQpbQm9iLXIyNF0gA4S+pYsHAQAHpYzhyQMCAgUIBJzv2XAEAAQJCBcBIwM=",
+      "created_at": "2026-09-17T19:26:12.664Z",
+      "bytes": 476
+    },
+    {
+      "id": 64,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:26:12.931Z",
+      "bytes": 148
+    },
+    {
+      "id": 65,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:26:27.933Z",
+      "bytes": 148
+    },
+    {
+      "id": 66,
+      "document_id": "latency-harness-1789673199661",
+      "binary_state_base64": "AQHH9MrRCwAEAQR0ZXh0ZEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWkFCQ0RFRkdISUpLTE1OT1BRUlNUVVYA",
+      "created_at": "2026-09-17T19:26:40.479Z",
+      "bytes": 117
+    },
+    {
+      "id": 67,
+      "document_id": "latency-harness-1789673199661",
+      "binary_state_base64": "AQHH9MrRCwAEAQR0ZXh0ZEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWkFCQ0RFRkdISUpLTE1OT1BRUlNUVVYA",
+      "created_at": "2026-09-17T19:26:41.690Z",
+      "bytes": 117
+    },
+    {
+      "id": 68,
+      "document_id": "latency-harness-1789673199661",
+      "binary_state_base64": "AQHH9MrRCwAEAQR0ZXh0ZEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWkFCQ0RFRkdISUpLTE1OT1BRUlNUVVYA",
+      "created_at": "2026-09-17T19:26:41.692Z",
+      "bytes": 117
+    },
+    {
+      "id": 69,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:26:42.934Z",
+      "bytes": 148
+    },
+    {
+      "id": 70,
+      "document_id": "latency-harness-1789673217072",
+      "binary_state_base64": "AQG70uTNAQAEAQR0ZXh0ZEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWkFCQ0RFRkdISUpLTE1OT1BRUlNUVVYA",
+      "created_at": "2026-09-17T19:26:57.300Z",
+      "bytes": 117
+    },
+    {
+      "id": 71,
+      "document_id": "latency-harness-1789673217072",
+      "binary_state_base64": "AQG70uTNAQAEAQR0ZXh0ZEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWkFCQ0RFRkdISUpLTE1OT1BRUlNUVVYA",
+      "created_at": "2026-09-17T19:26:57.301Z",
+      "bytes": 117
+    },
+    {
+      "id": 72,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:26:57.936Z",
+      "bytes": 148
+    },
+    {
+      "id": 73,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:27:12.014Z",
+      "bytes": 148
+    },
+    {
+      "id": 74,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:27:12.937Z",
+      "bytes": 148
+    },
+    {
+      "id": 75,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:27:27.938Z",
+      "bytes": 148
+    },
+    {
+      "id": 76,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:27:42.938Z",
+      "bytes": 148
+    },
+    {
+      "id": 77,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:27:57.940Z",
+      "bytes": 148
+    },
+    {
+      "id": 78,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:28:12.941Z",
+      "bytes": 148
+    },
+    {
+      "id": 79,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:28:27.941Z",
+      "bytes": 148
+    },
+    {
+      "id": 80,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:28:42.942Z",
+      "bytes": 148
+    },
+    {
+      "id": 81,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:28:57.943Z",
+      "bytes": 148
+    },
+    {
+      "id": 82,
+      "document_id": "master-test-room-1789673350700",
+      "binary_state_base64": "AQXko/jOBAAHAQdkZWZhdWx0AwdoZWFkaW5nBwDko/jOBAAGBADko/jOBAETTWFzdGVyIFRlc3QgSGVhZGluZygA5KP4zgQABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:29:11.523Z",
+      "bytes": 121
+    },
+    {
+      "id": 83,
+      "document_id": "master-test-room-1789673350700",
+      "binary_state_base64": "AQXko/jOBAAHAQdkZWZhdWx0AwdoZWFkaW5nBwDko/jOBAAGBADko/jOBAETTWFzdGVyIFRlc3QgSGVhZGluZygA5KP4zgQABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:29:12.529Z",
+      "bytes": 121
+    },
+    {
+      "id": 84,
+      "document_id": "master-test-room-1789673350700",
+      "binary_state_base64": "AQXko/jOBAAHAQdkZWZhdWx0AwdoZWFkaW5nBwDko/jOBAAGBADko/jOBAETTWFzdGVyIFRlc3QgSGVhZGluZygA5KP4zgQABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:29:12.531Z",
+      "bytes": 121
+    },
+    {
+      "id": 85,
+      "document_id": "master-test-room-1789673350700",
+      "binary_state_base64": "AgKCzoj5BwAoAQhjb21tZW50cw9jb21tZW50LXN1aXRlLTEBdgcCaWR3D2NvbW1lbnQtc3VpdGUtMQphdXRob3JOYW1ldwhSZXZpZXdlcgthdXRob3JDb2xvcncHIzEwYjk4MQR0ZXh0dzBBcmNoaXRlY3R1cmUgYXBwcm92ZWQgZm9yIHByb2R1Y3Rpb24gZGVwbG95bWVudC4JY3JlYXRlZEF0e0J6Cw2C1bAACHJlc29sdmVkeQdyZXBsaWVzdQAoAQtzdWdnZXN0aW9ucwxzdWdnLXN1aXRlLTEBdgcCaWR3DHN1Z2ctc3VpdGUtMQR0eXBldwZpbnNlcnQKYXV0aG9yTmFtZXcETGVhZAthdXRob3JDb2xvcncHIzNiODJmNgR0ZXh0dyJIaWdoIEF2YWlsYWJpbGl0eSBNdWx0aS1BWiBDbHVzdGVyCWNyZWF0ZWRBdHtCegsNgtXAAAZzdGF0dXN3B3BlbmRpbmcF5KP4zgQABwEHZGVmYXVsdAMHaGVhZGluZwcA5KP4zgQABgQA5KP4zgQBE01hc3RlciBUZXN0IEhlYWRpbmcoAOSj+M4EAAVsZXZlbAF3ATEEAQV0aXRsZR1TeXN0ZW0gQXJjaGl0ZWN0dXJlIEJsdWVwcmludAA=",
+      "created_at": "2026-09-17T19:29:12.944Z",
+      "bytes": 488
+    },
+    {
+      "id": 86,
+      "document_id": "master-test-room-1789673350700",
+      "binary_state_base64": "AgKCzoj5BwAoAQhjb21tZW50cw9jb21tZW50LXN1aXRlLTEBdgcCaWR3D2NvbW1lbnQtc3VpdGUtMQphdXRob3JOYW1ldwhSZXZpZXdlcgthdXRob3JDb2xvcncHIzEwYjk4MQR0ZXh0dzBBcmNoaXRlY3R1cmUgYXBwcm92ZWQgZm9yIHByb2R1Y3Rpb24gZGVwbG95bWVudC4JY3JlYXRlZEF0e0J6Cw2C1bAACHJlc29sdmVkeQdyZXBsaWVzdQAoAQtzdWdnZXN0aW9ucwxzdWdnLXN1aXRlLTEBdgcCaWR3DHN1Z2ctc3VpdGUtMQR0eXBldwZpbnNlcnQKYXV0aG9yTmFtZXcETGVhZAthdXRob3JDb2xvcncHIzNiODJmNgR0ZXh0dyJIaWdoIEF2YWlsYWJpbGl0eSBNdWx0aS1BWiBDbHVzdGVyCWNyZWF0ZWRBdHtCegsNgtXAAAZzdGF0dXN3B3BlbmRpbmcF5KP4zgQABwEHZGVmYXVsdAMHaGVhZGluZwcA5KP4zgQABgQA5KP4zgQBE01hc3RlciBUZXN0IEhlYWRpbmcoAOSj+M4EAAVsZXZlbAF3ATEEAQV0aXRsZR1TeXN0ZW0gQXJjaGl0ZWN0dXJlIEJsdWVwcmludAA=",
+      "created_at": "2026-09-17T19:29:12.944Z",
+      "bytes": 488
+    },
+    {
+      "id": 87,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:29:12.945Z",
+      "bytes": 148
     }
   ],
   "document_versions": [
@@ -527,6 +751,16 @@
       "author_color": "#10b981",
       "created_at": "2026-09-17T19:22:33.054Z",
       "bytes": 115
+    },
+    {
+      "id": 3,
+      "document_id": "master-test-room-1789673350700",
+      "version_name": "Master Suite Checkpoint v1.0",
+      "binary_state_base64": "AQXko/jOBAAHAQdkZWZhdWx0AwdoZWFkaW5nBwDko/jOBAAGBADko/jOBAETTWFzdGVyIFRlc3QgSGVhZGluZygA5KP4zgQABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "author_name": "Master Test Runner",
+      "author_color": "#8b5cf6",
+      "created_at": "2026-09-17T19:29:12.537Z",
+      "bytes": 121
     }
   ]
 }

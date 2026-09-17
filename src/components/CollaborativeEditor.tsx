@@ -33,7 +33,9 @@ import {
   Sparkles,
   History,
   MessageSquare,
+  Activity,
 } from 'lucide-react'
+import Link from 'next/link'
 import VersionHistoryDrawer from './VersionHistoryDrawer'
 import CommentsSidebar from './CommentsSidebar'
 
@@ -521,6 +523,16 @@ export default function CollaborativeEditor({
               <MessageSquare className="w-3.5 h-3.5 text-blue-600" />
               <span className="hidden sm:inline">Comments</span>
             </button>
+
+            {/* Ops / Metrics Dashboard Link (Stage F) */}
+            <Link
+              href="/admin/metrics"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-xs transition cursor-pointer"
+              title="Open Cluster Ops & Sync Metrics Dashboard"
+            >
+              <Activity className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="hidden md:inline">Metrics</span>
+            </Link>
 
             {/* Current User Pill */}
             <button
