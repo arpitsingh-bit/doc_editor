@@ -118,6 +118,13 @@
       "created_at": "2026-09-17T19:29:11.523Z",
       "updated_at": "2026-09-17T19:29:12.944Z",
       "owner_id": "anonymous"
+    },
+    "master-test-room-1789673401022": {
+      "id": "master-test-room-1789673401022",
+      "title": "master-test-room-1789673401022",
+      "created_at": "2026-09-17T19:30:01.850Z",
+      "updated_at": "2026-09-17T19:30:03.274Z",
+      "owner_id": "anonymous"
     }
   },
   "document_snapshots": [
@@ -750,6 +757,41 @@
       "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
       "created_at": "2026-09-17T19:29:57.948Z",
       "bytes": 148
+    },
+    {
+      "id": 91,
+      "document_id": "master-test-room-1789673401022",
+      "binary_state_base64": "AQXlmcCbAgAHAQdkZWZhdWx0AwdoZWFkaW5nBwDlmcCbAgAGBADlmcCbAgETTWFzdGVyIFRlc3QgSGVhZGluZygA5ZnAmwIABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:30:01.850Z",
+      "bytes": 121
+    },
+    {
+      "id": 92,
+      "document_id": "master-test-room-1789673401022",
+      "binary_state_base64": "AQXlmcCbAgAHAQdkZWZhdWx0AwdoZWFkaW5nBwDlmcCbAgAGBADlmcCbAgETTWFzdGVyIFRlc3QgSGVhZGluZygA5ZnAmwIABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:30:02.854Z",
+      "bytes": 121
+    },
+    {
+      "id": 93,
+      "document_id": "master-test-room-1789673401022",
+      "binary_state_base64": "AQXlmcCbAgAHAQdkZWZhdWx0AwdoZWFkaW5nBwDlmcCbAgAGBADlmcCbAgETTWFzdGVyIFRlc3QgSGVhZGluZygA5ZnAmwIABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:30:02.855Z",
+      "bytes": 121
+    },
+    {
+      "id": 94,
+      "document_id": "master-test-room-1789673401022",
+      "binary_state_base64": "AgKSr5f4BwAoAQhjb21tZW50cw9jb21tZW50LXN1aXRlLTEBdgcCaWR3D2NvbW1lbnQtc3VpdGUtMQphdXRob3JOYW1ldwhSZXZpZXdlcgthdXRob3JDb2xvcncHIzEwYjk4MQR0ZXh0dzBBcmNoaXRlY3R1cmUgYXBwcm92ZWQgZm9yIHByb2R1Y3Rpb24gZGVwbG95bWVudC4JY3JlYXRlZEF0e0J6Cw2PHtAACHJlc29sdmVkeQdyZXBsaWVzdQAoAQtzdWdnZXN0aW9ucwxzdWdnLXN1aXRlLTEBdgcCaWR3DHN1Z2ctc3VpdGUtMQR0eXBldwZpbnNlcnQKYXV0aG9yTmFtZXcETGVhZAthdXRob3JDb2xvcncHIzNiODJmNgR0ZXh0dyJIaWdoIEF2YWlsYWJpbGl0eSBNdWx0aS1BWiBDbHVzdGVyCWNyZWF0ZWRBdHtCegsNjx7gAAZzdGF0dXN3B3BlbmRpbmcF5ZnAmwIABwEHZGVmYXVsdAMHaGVhZGluZwcA5ZnAmwIABgQA5ZnAmwIBE01hc3RlciBUZXN0IEhlYWRpbmcoAOWZwJsCAAVsZXZlbAF3ATEEAQV0aXRsZR1TeXN0ZW0gQXJjaGl0ZWN0dXJlIEJsdWVwcmludAA=",
+      "created_at": "2026-09-17T19:30:03.271Z",
+      "bytes": 488
+    },
+    {
+      "id": 95,
+      "document_id": "master-test-room-1789673401022",
+      "binary_state_base64": "AgKSr5f4BwAoAQhjb21tZW50cw9jb21tZW50LXN1aXRlLTEBdgcCaWR3D2NvbW1lbnQtc3VpdGUtMQphdXRob3JOYW1ldwhSZXZpZXdlcgthdXRob3JDb2xvcncHIzEwYjk4MQR0ZXh0dzBBcmNoaXRlY3R1cmUgYXBwcm92ZWQgZm9yIHByb2R1Y3Rpb24gZGVwbG95bWVudC4JY3JlYXRlZEF0e0J6Cw2PHtAACHJlc29sdmVkeQdyZXBsaWVzdQAoAQtzdWdnZXN0aW9ucwxzdWdnLXN1aXRlLTEBdgcCaWR3DHN1Z2ctc3VpdGUtMQR0eXBldwZpbnNlcnQKYXV0aG9yTmFtZXcETGVhZAthdXRob3JDb2xvcncHIzNiODJmNgR0ZXh0dyJIaWdoIEF2YWlsYWJpbGl0eSBNdWx0aS1BWiBDbHVzdGVyCWNyZWF0ZWRBdHtCegsNjx7gAAZzdGF0dXN3B3BlbmRpbmcF5ZnAmwIABwEHZGVmYXVsdAMHaGVhZGluZwcA5ZnAmwIABgQA5ZnAmwIBE01hc3RlciBUZXN0IEhlYWRpbmcoAOWZwJsCAAVsZXZlbAF3ATEEAQV0aXRsZR1TeXN0ZW0gQXJjaGl0ZWN0dXJlIEJsdWVwcmludAA=",
+      "created_at": "2026-09-17T19:30:03.274Z",
+      "bytes": 488
     }
   ],
   "document_versions": [
@@ -781,6 +823,16 @@
       "author_name": "Master Test Runner",
       "author_color": "#8b5cf6",
       "created_at": "2026-09-17T19:29:12.537Z",
+      "bytes": 121
+    },
+    {
+      "id": 4,
+      "document_id": "master-test-room-1789673401022",
+      "version_name": "Master Suite Checkpoint v1.0",
+      "binary_state_base64": "AQXlmcCbAgAHAQdkZWZhdWx0AwdoZWFkaW5nBwDlmcCbAgAGBADlmcCbAgETTWFzdGVyIFRlc3QgSGVhZGluZygA5ZnAmwIABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "author_name": "Master Test Runner",
+      "author_color": "#8b5cf6",
+      "created_at": "2026-09-17T19:30:02.860Z",
       "bytes": 121
     }
   ]
