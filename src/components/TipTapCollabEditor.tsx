@@ -6,6 +6,7 @@ import { WebsocketProvider } from 'y-websocket'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Collaboration from '@tiptap/extension-collaboration'
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import {
   Bold,
   Italic,
@@ -21,67 +22,69 @@ import {
   Users,
   Wifi,
   WifiOff,
+  UserCheck,
+  Palette,
 } from 'lucide-react'
 
-interface TipTapCollabEditorProps {
-  roomName?: string
-  serverUrl?: string
+const CURSOR_COLORS = [
+  '#ef4444', // Red
+  '#f97316', // Orange
+  '#eab308', // Yellow
+  '#10b981', // Green
+  '#06b6d4', // Cyan
+  '#3b82f6', // Blue
+  '#8b5cf6', // Purple
+  '#ec4899', // Pink
+]
+
+const ADJECTIVES = ['Swift', 'Clever', 'Bright', 'Calm', 'Brave', 'Keen', 'Quick', 'Bold', 'Wise', 'Nimble']
+const ANIMALS = ['Fox', 'Panda', 'Koala', 'Falcon', 'Cheetah', 'Otter', 'Badger', 'Lynx', 'Dolphin', 'Eagle']
+
+function generateRandomUser() {
+  const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)]
+  const anim = ANIMALS[Math.floor(Math.random() * ANIMALS.length)]
+  const color = CURSOR_COLORS[Math.floor(Math.random() * CURSOR_COLORS.length)]
+  return {
+    name: `${adj} ${anim}`,
+    color,
+  }
 }
 
-export default function TipTapCollabEditor({
-  roomName = 'collaborative-doc-demo',
-  serverUrl = 'ws://localhost:1234',
-}: TipTapCollabEditorProps) {
-  const [status, setStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting')
-  const [activeUsers, setActiveUsers] = useState<number>(1)
-  const [lastSyncTime, setLastSyncTime] = useState<string>('')
+interface UserState {
+  name: string
+  color: string
+}
 
-  // Single stable Y.Doc instance across re-renders (prevents sync stop bugs)
-  const doc = useMemo(() => new Y.Doc(), [])
+interface Collaborator {
+  clientId: number
+  isCurrent: boolean
+  user: UserState
+}
 
-  // Single stable WebsocketProvider
-  const [provider, setProvider] = useState<WebsocketProvider | null>(null)
-
-  useEffect(() => {
-    const wsProvider = new WebsocketProvider(serverUrl, roomName, doc, {
-      connect: true,
-    })
-    setProvider(wsProvider)
-
-    const handleStatus = (event: { status: 'connected' | 'connecting' | 'disconnected' }) => {
-      setStatus(event.status)
-      if (event.status === 'connected') {
-        setLastSyncTime(new Date().toLocaleTimeString())
-      }
-    }
-    wsProvider.on('status', handleStatus)
-
-    const handleAwareness = () => {
-      const states = wsProvider.awareness.getStates()
-      setActiveUsers(Math.max(1, states.size))
-    }
-    wsProvider.awareness.on('change', handleAwareness)
-    handleAwareness()
-
-    return () => {
-      wsProvider.off('status', handleStatus)
-      wsProvider.awareness.off('change', handleAwareness)
-      wsProvider.destroy()
-      doc.destroy()
-    }
-  }, [serverUrl, roomName, doc])
-
-  // TipTap editor bound to Y.Doc
+// Inner Editor Surface component guaranteed to have active provider
+function EditorSurface({
+  doc,
+  provider,
+  currentUser,
+}: {
+  doc: Y.Doc
+  provider: WebsocketProvider
+  currentUser: UserState
+}) {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
       // CRITICAL: Disable TipTap default history extension.
-      // Yjs handles undo/redo via y-prosemirror to ensure conflict-free undo stacks.
+      // Yjs handles undo/redo via y-prosemirror with awareness of multi-user operations.
       StarterKit.configure({
         history: false,
       }),
       Collaboration.configure({
         document: doc,
+      }),
+      CollaborationCursor.configure({
+        provider: provider,
+        user: currentUser,
       }),
     ],
     editorProps: {
@@ -93,51 +96,14 @@ export default function TipTapCollabEditor({
 
   if (!editor) {
     return (
-      <div className="w-full max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center text-slate-400">
-        Initializing collaborative editor...
+      <div className="p-10 text-center text-slate-400">
+        Loading editor surface...
       </div>
     )
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      {/* Header Bar */}
-      <div className="bg-slate-50 border-b border-slate-200 px-5 py-3 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 font-medium text-slate-800 text-sm">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
-            Room: <span className="font-mono font-semibold text-blue-600">{roomName}</span>
-          </div>
-          <span className="text-slate-300">|</span>
-          <span className="text-xs text-slate-500 font-mono">{serverUrl}</span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {/* Status Badge */}
-          <div
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border"
-            style={{
-              backgroundColor: status === 'connected' ? '#f0fdf4' : status === 'connecting' ? '#fefce8' : '#fef2f2',
-              borderColor: status === 'connected' ? '#bbf7d0' : status === 'connecting' ? '#fef08a' : '#fecaca',
-              color: status === 'connected' ? '#166534' : status === 'connecting' ? '#854d0e' : '#991b1b',
-            }}
-          >
-            {status === 'connected' ? (
-              <Wifi className="w-3.5 h-3.5 text-emerald-600" />
-            ) : (
-              <WifiOff className="w-3.5 h-3.5 text-rose-500" />
-            )}
-            <span className="capitalize">{status}</span>
-          </div>
-
-          {/* Active Collaborators Counter */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
-            <Users className="w-3.5 h-3.5 text-slate-500" />
-            <span>{activeUsers} active {activeUsers === 1 ? 'user' : 'users'}</span>
-          </div>
-        </div>
-      </div>
-
+    <div>
       {/* Rich Text Toolbar */}
       <div className="border-b border-slate-200 bg-white px-4 py-2 flex flex-wrap items-center gap-1">
         <button
@@ -232,7 +198,7 @@ export default function TipTapCollabEditor({
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
           className="p-2 rounded hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent text-slate-600 transition"
-          title="Undo (CRDT history)"
+          title="Undo"
         >
           <Undo className="w-4 h-4" />
         </button>
@@ -242,23 +208,210 @@ export default function TipTapCollabEditor({
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
           className="p-2 rounded hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent text-slate-600 transition"
-          title="Redo (CRDT history)"
+          title="Redo"
         >
           <Redo className="w-4 h-4" />
         </button>
       </div>
 
-      {/* TipTap Rich Editor Surface */}
+      {/* Editor Content Area */}
       <div className="min-h-[320px] bg-white cursor-text" onClick={() => editor.commands.focus()}>
         <EditorContent editor={editor} />
       </div>
+    </div>
+  )
+}
 
-      {/* Stage 2 Footer */}
+interface TipTapCollabEditorProps {
+  roomName?: string
+  serverUrl?: string
+}
+
+export default function TipTapCollabEditor({
+  roomName = 'collaborative-doc-demo',
+  serverUrl = 'ws://localhost:1234',
+}: TipTapCollabEditorProps) {
+  const [status, setStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting')
+  const [lastSyncTime, setLastSyncTime] = useState<string>('')
+  const [currentUser, setCurrentUser] = useState<UserState>(() => generateRandomUser())
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([])
+  const [showUserModal, setShowUserModal] = useState<boolean>(false)
+
+  // Single stable Y.Doc instance across re-renders
+  const doc = useMemo(() => new Y.Doc(), [])
+  const [provider, setProvider] = useState<WebsocketProvider | null>(null)
+
+  useEffect(() => {
+    const wsProvider = new WebsocketProvider(serverUrl, roomName, doc, {
+      connect: true,
+    })
+
+    // Set initial awareness state
+    wsProvider.awareness.setLocalStateField('user', currentUser)
+
+    const handleStatus = (event: { status: 'connected' | 'connecting' | 'disconnected' }) => {
+      setStatus(event.status)
+      if (event.status === 'connected') {
+        setLastSyncTime(new Date().toLocaleTimeString())
+      }
+    }
+    wsProvider.on('status', handleStatus)
+
+    const handleAwareness = () => {
+      const states = wsProvider.awareness.getStates()
+      const list: Collaborator[] = []
+
+      states.forEach((state, clientId) => {
+        if (state.user) {
+          list.push({
+            clientId,
+            isCurrent: clientId === wsProvider.awareness.clientID,
+            user: state.user as UserState,
+          })
+        }
+      })
+
+      setCollaborators(list)
+    }
+
+    wsProvider.awareness.on('change', handleAwareness)
+    handleAwareness()
+
+    setProvider(wsProvider)
+
+    return () => {
+      wsProvider.off('status', handleStatus)
+      wsProvider.awareness.off('change', handleAwareness)
+      wsProvider.destroy()
+      doc.destroy()
+    }
+  }, [serverUrl, roomName, doc])
+
+  // Update awareness when currentUser changes
+  const handleUpdateUser = (updated: Partial<UserState>) => {
+    const nextUser = { ...currentUser, ...updated }
+    setCurrentUser(nextUser)
+    if (provider) {
+      provider.awareness.setLocalStateField('user', nextUser)
+    }
+  }
+
+  return (
+    <div className="w-full max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      {/* Top Header / Collaboration Bar */}
+      <div className="bg-slate-50 border-b border-slate-200 px-5 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 font-medium text-slate-800 text-sm">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+            Room: <span className="font-mono font-semibold text-blue-600">{roomName}</span>
+          </div>
+          <span className="text-slate-300">|</span>
+          <span className="text-xs text-slate-500 font-mono">{serverUrl}</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Active Collaborators Avatars */}
+          <div className="flex items-center -space-x-1.5 overflow-hidden">
+            {collaborators.map((c) => (
+              <div
+                key={c.clientId}
+                className="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold ring-2 ring-white shadow-sm cursor-pointer transition hover:scale-110"
+                style={{ backgroundColor: c.user.color }}
+                title={`${c.user.name}${c.isCurrent ? ' (You)' : ''}`}
+              >
+                {c.user.name.charAt(0).toUpperCase()}
+              </div>
+            ))}
+          </div>
+
+          {/* Current User Pill / Customize Profile */}
+          <button
+            type="button"
+            onClick={() => setShowUserModal(!showUserModal)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border bg-white text-slate-700 hover:bg-slate-50 transition shadow-sm"
+          >
+            <span
+              className="w-2.5 h-2.5 rounded-full ring-1 ring-slate-300"
+              style={{ backgroundColor: currentUser.color }}
+            />
+            <span className="font-medium truncate max-w-[100px]">{currentUser.name}</span>
+            <Palette className="w-3 h-3 text-slate-400 ml-0.5" />
+          </button>
+
+          {/* Status Badge */}
+          <div
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border"
+            style={{
+              backgroundColor: status === 'connected' ? '#f0fdf4' : status === 'connecting' ? '#fefce8' : '#fef2f2',
+              borderColor: status === 'connected' ? '#bbf7d0' : status === 'connecting' ? '#fef08a' : '#fecaca',
+              color: status === 'connected' ? '#166534' : status === 'connecting' ? '#854d0e' : '#991b1b',
+            }}
+          >
+            {status === 'connected' ? (
+              <Wifi className="w-3.5 h-3.5 text-emerald-600" />
+            ) : (
+              <WifiOff className="w-3.5 h-3.5 text-rose-500" />
+            )}
+            <span className="capitalize">{status}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* User Customization Bar (Dropdown) */}
+      {showUserModal && (
+        <div className="bg-slate-100 border-b border-slate-200 px-5 py-3 flex flex-wrap items-center justify-between gap-4 text-xs animate-in fade-in duration-150">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-slate-700">Display Name:</span>
+            <input
+              type="text"
+              value={currentUser.name}
+              onChange={(e) => handleUpdateUser({ name: e.target.value })}
+              className="px-2.5 py-1 rounded border border-slate-300 text-slate-800 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs font-medium"
+              placeholder="Your name"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-slate-700">Cursor Color:</span>
+            <div className="flex items-center gap-1.5">
+              {CURSOR_COLORS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => handleUpdateUser({ color: c })}
+                  className={`w-5 h-5 rounded-full transition-transform ${currentUser.color === c ? 'scale-125 ring-2 ring-slate-800 ring-offset-1' : 'hover:scale-110'}`}
+                  style={{ backgroundColor: c }}
+                  title={c}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowUserModal(false)}
+              className="ml-3 px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Editor Surface */}
+      {provider ? (
+        <EditorSurface doc={doc} provider={provider} currentUser={currentUser} />
+      ) : (
+        <div className="p-12 text-center text-slate-400">Connecting to collaborative relay...</div>
+      )}
+
+      {/* Footer */}
       <div className="bg-slate-50 border-t border-slate-200 px-5 py-3 text-xs text-slate-500 flex items-center justify-between">
         <p>
-          💡 <strong>Stage 2 (TipTap Rich Editor):</strong> Rich formatting (headings, lists, bold, blockquotes) and collaborative undo/redo are synchronized simultaneously via Yjs ProseMirror bindings.
+          💡 <strong>Stage 3 (Live Presence & Cursors):</strong> Colored cursor tags and selections update dynamically via Yjs Awareness across all open windows.
         </p>
-        {lastSyncTime && <span>Synced at {lastSyncTime}</span>}
+        <div className="flex items-center gap-2">
+          <span>{collaborators.length} collaborator{collaborators.length === 1 ? '' : 's'} online</span>
+          {lastSyncTime && <span>• Synced at {lastSyncTime}</span>}
+        </div>
       </div>
     </div>
   )
