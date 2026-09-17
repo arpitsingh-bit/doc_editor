@@ -32,8 +32,10 @@ import {
   Sidebar as SidebarIcon,
   Sparkles,
   History,
+  MessageSquare,
 } from 'lucide-react'
 import VersionHistoryDrawer from './VersionHistoryDrawer'
+import CommentsSidebar from './CommentsSidebar'
 
 const CURSOR_COLORS = [
   '#ef4444', // Red
@@ -288,6 +290,8 @@ export default function CollaborativeEditor({
   const [showDemoModal, setShowDemoModal] = useState<boolean>(false)
   const [showSidebar, setShowSidebar] = useState<boolean>(true)
   const [showVersionHistory, setShowVersionHistory] = useState<boolean>(false)
+  const [showCommentsSidebar, setShowCommentsSidebar] = useState<boolean>(false)
+  const [isSuggestingMode, setIsSuggestingMode] = useState<boolean>(false)
   const [isSimulatingOffline, setIsSimulatingOffline] = useState<boolean>(false)
   const [copiedLink, setCopiedLink] = useState<boolean>(false)
   const [copiedPitch, setCopiedPitch] = useState<boolean>(false)
@@ -501,6 +505,21 @@ export default function CollaborativeEditor({
             >
               <History className="w-3.5 h-3.5 text-blue-600" />
               <span className="hidden sm:inline">History</span>
+            </button>
+
+            {/* Comments & Suggestions Button (Stage E) */}
+            <button
+              type="button"
+              onClick={() => setShowCommentsSidebar(!showCommentsSidebar)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+                showCommentsSidebar
+                  ? 'bg-blue-50 border-blue-200 text-blue-600'
+                  : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+              }`}
+              title="Toggle Comments & Suggestions Panel"
+            >
+              <MessageSquare className="w-3.5 h-3.5 text-blue-600" />
+              <span className="hidden sm:inline">Comments</span>
             </button>
 
             {/* Current User Pill */}
@@ -725,6 +744,16 @@ export default function CollaborativeEditor({
               </div>
             </div>
           </aside>
+        )}
+
+        {/* Stage E: Comments & Suggestions Panel */}
+        {showCommentsSidebar && (
+          <CommentsSidebar
+            doc={doc}
+            currentUser={currentUser}
+            isSuggestingMode={isSuggestingMode}
+            onToggleSuggestingMode={setIsSuggestingMode}
+          />
         )}
       </div>
 
