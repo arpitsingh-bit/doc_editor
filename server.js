@@ -157,8 +157,9 @@ async function bootstrap() {
         return
       }
 
-      // Non-destructive forward-transaction restore:
-      // Preserves Y.Doc state vector continuity and multi-client connections
+      // Restores are additive: a collaborator's confirmation appends a historical
+      // state after the live document rather than blanking the XML fragment. This
+      // preserves edits received while the restore request was in flight.
       const Y = require('yjs')
 
       // Recursive helper to clone Yjs XML tree while keeping nodes attached
@@ -190,30 +191,34 @@ async function bootstrap() {
         Y.applyUpdate(histDoc, version.binary_state)
 
         activeDoc.transact(() => {
-          // 1. Restore document title
-          const curTitle = activeDoc.getText('title')
+          // Keep the live title intact and record which checkpoint was restored.
+          // Title clobbering is the same failure mode as fragment replacement.
           const histTitle = histDoc.getText('title')
-          if (curTitle && histTitle) {
-            curTitle.delete(0, curTitle.length)
-            curTitle.insert(0, histTitle.toString())
-          }
+          activeDoc.getMap('restoreProposals').set(`restore-${versionId}-${Date.now()}`, {
+            versionId, restoredAt: Date.now(), title: histTitle ? histTitle.toString() : '', confirmed: true,
+          })
 
           // 2. Restore ProseMirror XML fragment
           const curFrag = activeDoc.getXmlFragment('default')
           const histFrag = histDoc.getXmlFragment('default')
-          if (curFrag && histFrag) {
-            curFrag.delete(0, curFrag.length)
+          if (curFrag && histFrag && histFrag.length) {
+            // A separator makes the inserted state explicit to readers and leaves
+            // all concurrent live nodes addressable by Yjs.
+            const separator = new Y.XmlElement('paragraph')
+            const separatorText = new Y.XmlText()
+            separatorText.insert(0, `Restored checkpoint: ${histTitle ? histTitle.toString() : versionId}`)
+            separator.push([separatorText])
+            curFrag.push([separator])
             copyXmlChildren(histFrag, curFrag)
           }
 
           // 3. Restore plain text prose if used
           const curProse = activeDoc.getText('prose')
           const histProse = histDoc.getText('prose')
-          if (curProse && histProse) {
-            curProse.delete(0, curProse.length)
-            curProse.insert(0, histProse.toString())
+          if (curProse && histProse && histProse.toString()) {
+            curProse.insert(curProse.length, `\n\n[Restored checkpoint ${versionId}]\n${histProse.toString()}`)
           }
-        }, { isRestore: true, versionId })
+        }, { origin: 'restore', versionId })
 
         // Save restored state to persistent storage
         await storageInterface.save(docId, Y.encodeStateAsUpdate(activeDoc), { flushImmediate: true })
@@ -222,7 +227,7 @@ async function bootstrap() {
       }
 
       res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ success: true, message: `Restored version ${versionId}`, docId }))
+      res.end(JSON.stringify({ success: true, message: `Inserted restored checkpoint ${versionId} without overwriting live edits`, docId }))
       return
     }
 

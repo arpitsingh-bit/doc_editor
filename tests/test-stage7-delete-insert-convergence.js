@@ -1,0 +1,12 @@
+const assert = require('assert')
+const Y = require('yjs')
+const seed = new Y.Doc(); seed.getText('body').insert(0, 'alpha bravo charlie')
+const a = new Y.Doc(); const b = new Y.Doc(); const update = Y.encodeStateAsUpdate(seed)
+Y.applyUpdate(a, update); Y.applyUpdate(b, update)
+// User A inserts while User B deletes the overlapping original span.
+a.getText('body').insert(6, 'NEW ')
+b.getText('body').delete(6, 5)
+Y.applyUpdate(a, Y.encodeStateAsUpdate(b)); Y.applyUpdate(b, Y.encodeStateAsUpdate(a))
+assert.strictEqual(a.getText('body').toString(), b.getText('body').toString())
+assert(a.getText('body').toString().includes('NEW'), 'concurrent insert must not be silently lost')
+console.log('PASS: concurrent delete-vs-insert converges; UI guard can ask before destructive deletion')

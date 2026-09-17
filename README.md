@@ -2,6 +2,18 @@
 
 > **A mentor-defensible, enterprise-grade collaborative document editor built on Conflict-free Replicated Data Types (CRDTs). Designed with the same distributed architecture as Google Docs, Figma, and Notion's sync engine.**
 
+## Convergence is not intent preservation
+
+Yjs makes replicas converge, but it cannot by itself explain whether a destructive action overlaps a teammate's fresh work or make an offline delta visible. This editor adds non-persistent safeguards around the existing CRDT:
+
+- **Minimal title patches** replace only the changed title span, so independent title typing does not erase a whole shared `Y.Text`.
+- **Additive restores** append a confirmed historical checkpoint and record its metadata instead of clearing the live XML fragment; edits received during a restore remain intact.
+- **Soft block awareness** identifies who is editing a paragraph without locking typing. A recent same-block edit adds a one-click delete confirmation.
+- **Suggestion marks** keep proposed inserts/deletes independently reviewable; accepting or rejecting changes only that marked range in one transaction.
+- **IndexedDB-first startup and reconnect review** hydrate local CRDT state before the socket connects, retain offline changes through refresh, expose queued edits, and surface reconnect activity instead of hiding it.
+
+These affordances use decorations, awareness state, and local metadata—not a second merge layer—so the Redis-to-Postgres persistence cascade and Yjs convergence remain authoritative.
+
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=flat&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-18.3-blue?style=flat&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6?style=flat&logo=typescript)](https://www.typescriptlang.org/)

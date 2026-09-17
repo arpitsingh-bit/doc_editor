@@ -8,7 +8,6 @@ import {
   Send,
   Trash2,
   Clock,
-  Sparkles,
   ToggleLeft,
   ToggleRight,
   Check,
@@ -67,35 +66,26 @@ export default function CommentsSidebar({
   const [newCommentText, setNewCommentText] = useState('')
   const [replyTexts, setReplyTexts] = useState<{ [commentId: string]: string }>({})
 
-  // Yjs Shared Maps
   const commentsMap = doc.getMap<CommentItem>('comments')
   const suggestionsMap = doc.getMap<SuggestionItem>('suggestions')
 
   useEffect(() => {
     const updateComments = () => {
-      const allComments: CommentItem[] = []
-      commentsMap.forEach((val) => {
-        if (val && val.id) allComments.push(val)
-      })
-      allComments.sort((a, b) => b.createdAt - a.createdAt)
-      setComments(allComments)
+      const all: CommentItem[] = []
+      commentsMap.forEach((val) => { if (val && val.id) all.push(val) })
+      all.sort((a, b) => b.createdAt - a.createdAt)
+      setComments(all)
     }
-
     const updateSuggestions = () => {
-      const allSuggestions: SuggestionItem[] = []
-      suggestionsMap.forEach((val) => {
-        if (val && val.id) allSuggestions.push(val)
-      })
-      allSuggestions.sort((a, b) => b.createdAt - a.createdAt)
-      setSuggestions(allSuggestions)
+      const all: SuggestionItem[] = []
+      suggestionsMap.forEach((val) => { if (val && val.id) all.push(val) })
+      all.sort((a, b) => b.createdAt - a.createdAt)
+      setSuggestions(all)
     }
-
     commentsMap.observe(updateComments)
     suggestionsMap.observe(updateSuggestions)
-
     updateComments()
     updateSuggestions()
-
     return () => {
       commentsMap.unobserve(updateComments)
       suggestionsMap.unobserve(updateSuggestions)
@@ -105,44 +95,28 @@ export default function CommentsSidebar({
   const handleAddComment = (e: React.FormEvent) => {
     e.preventDefault()
     if (!newCommentText.trim()) return
-
     const id = `comment-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`
-    const comment: CommentItem = {
-      id,
-      authorName: currentUser.name,
-      authorColor: currentUser.color,
-      text: newCommentText.trim(),
-      createdAt: Date.now(),
-      resolved: false,
-      replies: [],
-    }
-
-    commentsMap.set(id, comment)
+    commentsMap.set(id, {
+      id, authorName: currentUser.name, authorColor: currentUser.color,
+      text: newCommentText.trim(), createdAt: Date.now(), resolved: false, replies: [],
+    })
     setNewCommentText('')
   }
 
   const handleAddReply = (commentId: string) => {
     const text = replyTexts[commentId]?.trim()
     if (!text) return
-
     const comment = commentsMap.get(commentId)
     if (!comment) return
-
-    const updatedComment: CommentItem = {
+    commentsMap.set(commentId, {
       ...comment,
-      replies: [
-        ...comment.replies,
-        {
-          id: `reply-${Date.now()}`,
-          authorName: currentUser.name,
-          authorColor: currentUser.color,
-          text,
-          createdAt: Date.now(),
-        },
-      ],
-    }
-
-    commentsMap.set(commentId, updatedComment)
+      replies: [...comment.replies, {
+        id: `reply-${Date.now()}`,
+        authorName: currentUser.name,
+        authorColor: currentUser.color,
+        text, createdAt: Date.now(),
+      }],
+    })
     setReplyTexts((prev) => ({ ...prev, [commentId]: '' }))
   }
 
@@ -170,279 +144,458 @@ export default function CommentsSidebar({
   const resolvedComments = comments.filter((c) => c.resolved)
   const pendingSuggestions = suggestions.filter((s) => s.status === 'pending')
 
+  // ── Shared style helpers ──────────────────────────────────────────────────
+  const panelBg = { backgroundColor: 'var(--color-chrome-bg)' }
+  const borderColor = { borderColor: 'var(--color-border)' }
+  const inkStyle = { color: 'var(--color-ink)', fontFamily: 'var(--font-ui)' }
+  const ink2Style = { color: 'var(--color-ink-2)', fontFamily: 'var(--font-ui)' }
+  const ink3Style = { color: 'var(--color-ink-3)', fontFamily: 'var(--font-ui)' }
+
   return (
-    <div className="w-80 bg-white border-l border-slate-200 flex flex-col h-full shadow-xs shrink-0 select-none text-slate-800">
-      {/* Tab Switcher & Mode Toggle */}
-      <div className="p-3 border-b border-slate-200 bg-slate-50/70">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex gap-1 bg-slate-200/70 p-0.5 rounded-lg text-xs font-semibold">
+    <div
+      className="flex flex-col h-full select-none"
+      style={{ ...panelBg, fontFamily: 'var(--font-ui)' }}
+    >
+      {/* ── Panel header ─────────────────────────────────────────────── */}
+      <div
+        className="px-4 pt-4 pb-3 border-b flex-shrink-0"
+        style={borderColor}
+      >
+        {/* Tab switcher */}
+        <div className="flex gap-0.5 mb-3">
+          {(['comments', 'suggestions'] as const).map((tab) => (
             <button
-              onClick={() => setActiveTab('comments')}
-              className={`px-2.5 py-1 rounded-md transition ${
-                activeTab === 'comments'
-                  ? 'bg-white text-slate-800 shadow-xs font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className="flex-1 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer capitalize"
+              style={
+                activeTab === tab
+                  ? {
+                      backgroundColor: 'var(--color-accent-subtle)',
+                      color: 'var(--color-accent-text)',
+                    }
+                  : ink2Style
+              }
+              aria-pressed={activeTab === tab}
             >
-              Comments ({openComments.length})
+              {tab === 'comments'
+                ? `Comments (${openComments.length})`
+                : `Suggestions (${pendingSuggestions.length})`}
             </button>
-            <button
-              onClick={() => setActiveTab('suggestions')}
-              className={`px-2.5 py-1 rounded-md transition ${
-                activeTab === 'suggestions'
-                  ? 'bg-white text-slate-800 shadow-xs font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Suggestions ({pendingSuggestions.length})
-            </button>
-          </div>
+          ))}
         </div>
 
-        {/* Suggestion Mode Toggle Bar */}
-        <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50 border border-blue-100 text-xs">
-          <div className="flex items-center gap-1.5 text-blue-950 font-medium">
-            <FileCheck className="w-3.5 h-3.5 text-blue-600" />
-            <span>Suggestion Mode</span>
+        {/* Suggestion mode toggle */}
+        <div
+          className="flex items-center justify-between px-3 py-2 rounded"
+          style={{
+            backgroundColor: isSuggestingMode
+              ? 'var(--color-accent-subtle)'
+              : 'var(--color-paper-2)',
+            border: '1px solid var(--color-border)',
+          }}
+        >
+          <div className="flex items-center gap-1.5">
+            <FileCheck
+              className="w-3.5 h-3.5"
+              style={{ color: isSuggestingMode ? 'var(--color-accent)' : 'var(--color-ink-3)' }}
+              aria-hidden
+            />
+            <span
+              className="text-xs font-medium"
+              style={{ color: isSuggestingMode ? 'var(--color-accent-text)' : 'var(--color-ink-2)' }}
+            >
+              Suggestion mode
+            </span>
           </div>
           <button
             type="button"
             onClick={() => onToggleSuggestingMode(!isSuggestingMode)}
-            className="flex items-center gap-1 font-semibold text-blue-700 hover:text-blue-900 transition cursor-pointer"
+            className="flex items-center gap-1 text-xs font-semibold cursor-pointer transition-opacity hover:opacity-70"
+            style={{ color: isSuggestingMode ? 'var(--color-accent-text)' : 'var(--color-ink-3)' }}
+            aria-pressed={isSuggestingMode}
+            aria-label={isSuggestingMode ? 'Disable suggestion mode' : 'Enable suggestion mode'}
           >
-            {isSuggestingMode ? (
-              <>
-                <span className="text-[11px] text-emerald-600 font-mono">ON</span>
-                <ToggleRight className="w-5 h-5 text-emerald-600" />
-              </>
-            ) : (
-              <>
-                <span className="text-[11px] text-slate-500 font-mono">OFF</span>
-                <ToggleLeft className="w-5 h-5 text-slate-400" />
-              </>
-            )}
+            <span className="font-mono" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px' }}>
+              {isSuggestingMode ? 'ON' : 'OFF'}
+            </span>
+            {isSuggestingMode
+              ? <ToggleRight className="w-5 h-5" aria-hidden />
+              : <ToggleLeft className="w-5 h-5" aria-hidden />
+            }
           </button>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-white">
+      {/* ── Scrollable content area ───────────────────────────────────── */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-3">
         {activeTab === 'comments' ? (
           <>
-            {/* New Comment Input Box */}
-            <form onSubmit={handleAddComment} className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <label className="block text-[11px] font-semibold text-slate-700 mb-1 font-mono uppercase tracking-wider">Add a Comment</label>
+            {/* New comment form */}
+            <form
+              onSubmit={handleAddComment}
+              className="p-3 rounded border"
+              style={{
+                backgroundColor: 'var(--color-paper-2)',
+                borderColor: 'var(--color-border)',
+              }}
+            >
+              <label
+                className="block text-2xs font-medium uppercase tracking-wider mb-1.5"
+                style={{ color: 'var(--color-ink-3)', fontFamily: 'var(--font-mono)' }}
+              >
+                Add comment
+              </label>
               <textarea
                 value={newCommentText}
                 onChange={(e) => setNewCommentText(e.target.value)}
-                placeholder="Give feedback or ask a question..."
-                className="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none h-16"
+                placeholder="Give feedback or ask a question…"
+                rows={3}
+                className="w-full text-xs px-2.5 py-2 rounded border resize-none transition-colors"
+                style={{
+                  backgroundColor: 'var(--color-chrome-bg)',
+                  borderColor: 'var(--color-border)',
+                  color: 'var(--color-ink)',
+                  fontFamily: 'var(--font-ui)',
+                }}
               />
               <div className="mt-2 flex justify-end">
                 <button
                   type="submit"
                   disabled={!newCommentText.trim()}
-                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-semibold text-xs rounded-lg shadow-xs flex items-center gap-1 transition cursor-pointer"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded text-xs font-medium transition-opacity cursor-pointer disabled:opacity-40"
+                  style={{
+                    backgroundColor: 'var(--color-accent)',
+                    color: 'hsl(40 20% 97%)',
+                  }}
                 >
-                  <Send className="w-3 h-3" />
-                  <span>Post</span>
+                  <Send className="w-3 h-3" aria-hidden />
+                  Post
                 </button>
               </div>
             </form>
 
-            {/* Comments List */}
+            {/* Comments list */}
             {comments.length === 0 ? (
-              <div className="py-12 text-center text-xs text-slate-400">
-                <MessageSquare className="w-7 h-7 mx-auto text-slate-300 mb-1.5" />
-                <p className="font-medium text-slate-600">No comments yet</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">Post the first comment to start a collaborative thread.</p>
-              </div>
+              <EmptyState
+                icon={<MessageSquare className="w-6 h-6" aria-hidden />}
+                title="No comments yet"
+                body="Post the first comment to start a thread."
+              />
             ) : (
               comments.map((comment) => (
-                <div
+                <CommentCard
                   key={comment.id}
-                  className={`p-3 rounded-xl border transition ${
-                    comment.resolved
-                      ? 'bg-slate-50/70 border-slate-200 opacity-60'
-                      : 'bg-white border-slate-200 hover:border-blue-300 shadow-xs'
-                  }`}
-                >
-                  {/* Author Header */}
-                  <div className="flex items-center justify-between gap-1 mb-1.5">
-                    <div className="flex items-center gap-1.5">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full shrink-0"
-                        style={{ backgroundColor: comment.authorColor }}
-                      />
-                      <span className="font-semibold text-xs text-slate-800">{comment.authorName}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => handleToggleResolve(comment.id)}
-                        className={`p-1 rounded transition ${
-                          comment.resolved
-                            ? 'text-emerald-600 hover:bg-emerald-50'
-                            : 'text-slate-400 hover:text-emerald-600 hover:bg-slate-100'
-                        }`}
-                        title={comment.resolved ? 'Reopen thread' : 'Mark resolved'}
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteComment(comment.id)}
-                        className="p-1 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded transition"
-                        title="Delete comment"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Comment Body */}
-                  <p className="text-xs text-slate-700 leading-relaxed break-words">{comment.text}</p>
-                  <div className="mt-1 text-[10px] text-slate-400 flex items-center gap-1 font-mono">
-                    <Clock className="w-2.5 h-2.5" />
-                    <span>{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                  </div>
-
-                  {/* Replies List */}
-                  {comment.replies.length > 0 && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-100 space-y-2">
-                      {comment.replies.map((reply) => (
-                        <div key={reply.id} className="pl-2 border-l-2 border-blue-500 bg-slate-50 p-2 rounded-r">
-                          <div className="flex items-center gap-1 mb-0.5">
-                            <span
-                              className="w-2 h-2 rounded-full"
-                              style={{ backgroundColor: reply.authorColor }}
-                            />
-                            <span className="font-semibold text-[11px] text-slate-800">{reply.authorName}</span>
-                          </div>
-                          <p className="text-[11px] text-slate-600 leading-normal">{reply.text}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Reply Input Box */}
-                  {!comment.resolved && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-100 flex gap-1">
-                      <input
-                        type="text"
-                        value={replyTexts[comment.id] || ''}
-                        onChange={(e) =>
-                          setReplyTexts((prev) => ({ ...prev, [comment.id]: e.target.value }))
-                        }
-                        placeholder="Reply..."
-                        className="flex-1 text-xs px-2.5 py-1 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 text-slate-800 placeholder:text-slate-400"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault()
-                            handleAddReply(comment.id)
-                          }
-                        }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleAddReply(comment.id)}
-                        disabled={!replyTexts[comment.id]?.trim()}
-                        className="px-2.5 py-1 bg-slate-100 hover:bg-blue-600 hover:text-white disabled:opacity-40 text-slate-600 rounded-md text-xs transition cursor-pointer"
-                      >
-                        Reply
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  comment={comment}
+                  replyText={replyTexts[comment.id] || ''}
+                  onReplyChange={(text) => setReplyTexts((prev) => ({ ...prev, [comment.id]: text }))}
+                  onSubmitReply={() => handleAddReply(comment.id)}
+                  onToggleResolve={() => handleToggleResolve(comment.id)}
+                  onDelete={() => handleDeleteComment(comment.id)}
+                />
               ))
             )}
           </>
         ) : (
-          /* Suggestions Tab */
+          /* Suggestions tab */
           <div className="space-y-3">
             {suggestions.length === 0 ? (
-              <div className="py-12 text-center text-xs text-slate-400">
-                <FileCheck className="w-7 h-7 mx-auto text-slate-300 mb-1.5" />
-                <p className="font-medium text-slate-600">No suggestions pending</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Turn on &quot;Suggestion Mode&quot; to propose tracked insertions and deletions.
-                </p>
-              </div>
+              <EmptyState
+                icon={<FileCheck className="w-6 h-6" aria-hidden />}
+                title="No suggestions pending"
+                body='Enable "Suggestion mode" to propose tracked changes.'
+              />
             ) : (
               suggestions.map((sugg) => (
-                <div
+                <SuggestionCard
                   key={sugg.id}
-                  className={`p-3 rounded-xl border transition ${
-                    sugg.status === 'accepted'
-                      ? 'bg-emerald-50/60 border-emerald-200'
-                      : sugg.status === 'rejected'
-                      ? 'bg-rose-50/60 border-rose-200 opacity-60'
-                      : 'bg-white border-slate-200 shadow-xs'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-1 mb-1">
-                    <div className="flex items-center gap-1.5">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: sugg.authorColor }}
-                      />
-                      <span className="font-semibold text-xs text-slate-800">{sugg.authorName}</span>
-                    </div>
-                    <span
-                      className={`text-[10px] font-bold font-mono uppercase px-1.5 py-0.5 rounded ${
-                        sugg.type === 'insert'
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : 'bg-rose-100 text-rose-700'
-                      }`}
-                    >
-                      {sugg.type === 'insert' ? 'Add' : 'Delete'}
-                    </span>
-                  </div>
-
-                  {/* Diff Content Preview */}
-                  <div className="p-2 rounded bg-slate-50 border border-slate-200 text-xs font-mono my-2">
-                    {sugg.type === 'insert' ? (
-                      <span className="text-emerald-700 bg-emerald-100/60 px-1 py-0.5 rounded">
-                        +{sugg.text}
-                      </span>
-                    ) : (
-                      <span className="text-rose-700 line-through bg-rose-100/60 px-1 py-0.5 rounded">
-                        -{sugg.text}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  {sugg.status === 'pending' ? (
-                    <div className="flex justify-end gap-1.5 mt-2">
-                      <button
-                        type="button"
-                        onClick={() => handleReject(sugg)}
-                        className="px-2 py-1 rounded text-xs font-medium text-rose-600 hover:bg-rose-50 border border-rose-200 flex items-center gap-1 transition cursor-pointer"
-                      >
-                        <X className="w-3 h-3" />
-                        <span>Reject</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleAccept(sugg)}
-                        className="px-2.5 py-1 rounded text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1 transition shadow-xs cursor-pointer"
-                      >
-                        <Check className="w-3 h-3" />
-                        <span>Accept</span>
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="text-[11px] font-medium font-mono text-slate-500 text-right capitalize">
-                      Status: {sugg.status}
-                    </div>
-                  )}
-                </div>
+                  suggestion={sugg}
+                  onAccept={() => handleAccept(sugg)}
+                  onReject={() => handleReject(sugg)}
+                />
               ))
             )}
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// ── Sub-components ──────────────────────────────────────────────────────────
+
+function EmptyState({
+  icon,
+  title,
+  body,
+}: {
+  icon: React.ReactNode
+  title: string
+  body: string
+}) {
+  return (
+    <div className="py-10 text-center" style={{ fontFamily: 'var(--font-ui)' }}>
+      <div className="mx-auto mb-2 flex items-center justify-center" style={{ color: 'var(--color-ink-3)' }}>
+        {icon}
+      </div>
+      <p className="text-xs font-medium" style={{ color: 'var(--color-ink-2)' }}>{title}</p>
+      <p className="text-2xs mt-1" style={{ color: 'var(--color-ink-3)' }}>{body}</p>
+    </div>
+  )
+}
+
+function CommentCard({
+  comment,
+  replyText,
+  onReplyChange,
+  onSubmitReply,
+  onToggleResolve,
+  onDelete,
+}: {
+  comment: CommentItem
+  replyText: string
+  onReplyChange: (text: string) => void
+  onSubmitReply: () => void
+  onToggleResolve: () => void
+  onDelete: () => void
+}) {
+  return (
+    <div
+      className="p-3 rounded border transition-opacity"
+      style={{
+        backgroundColor: comment.resolved ? 'var(--color-paper-2)' : 'var(--color-chrome-bg)',
+        borderColor: 'var(--color-border)',
+        opacity: comment.resolved ? 0.6 : 1,
+        fontFamily: 'var(--font-ui)',
+      }}
+    >
+      {/* Author row */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-1.5">
+          <span
+            className="w-2 h-2 rounded-full flex-shrink-0"
+            style={{ backgroundColor: comment.authorColor }}
+            aria-hidden
+          />
+          <span className="text-xs font-medium" style={{ color: 'var(--color-ink)' }}>
+            {comment.authorName}
+          </span>
+        </div>
+        <div className="flex items-center gap-0.5">
+          <button
+            type="button"
+            onClick={onToggleResolve}
+            className="p-1 rounded transition-colors cursor-pointer"
+            style={{ color: comment.resolved ? 'var(--color-state-connected)' : 'var(--color-ink-3)' }}
+            title={comment.resolved ? 'Reopen thread' : 'Mark resolved'}
+            aria-label={comment.resolved ? 'Reopen' : 'Resolve'}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5" aria-hidden />
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="p-1 rounded transition-colors cursor-pointer"
+            style={{ color: 'var(--color-ink-3)' }}
+            title="Delete comment"
+            aria-label="Delete comment"
+          >
+            <Trash2 className="w-3.5 h-3.5" aria-hidden />
+          </button>
+        </div>
+      </div>
+
+      {/* Body */}
+      <p className="text-xs leading-relaxed break-words" style={{ color: 'var(--color-ink)' }}>
+        {comment.text}
+      </p>
+      <div className="mt-1 flex items-center gap-1" style={{ color: 'var(--color-ink-3)' }}>
+        <Clock className="w-2.5 h-2.5" aria-hidden />
+        <span className="text-2xs font-mono" style={{ fontFamily: 'var(--font-mono)' }}>
+          {new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </span>
+      </div>
+
+      {/* Replies */}
+      {comment.replies.length > 0 && (
+        <div className="mt-2.5 pt-2 border-t space-y-2" style={{ borderColor: 'var(--color-border)' }}>
+          {comment.replies.map((reply) => (
+            <div
+              key={reply.id}
+              className="pl-2.5 py-1.5 rounded-r text-xs"
+              style={{
+                borderLeft: `2px solid ${reply.authorColor}`,
+                backgroundColor: 'var(--color-paper-2)',
+                color: 'var(--color-ink)',
+              }}
+            >
+              <div className="flex items-center gap-1 mb-0.5">
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: reply.authorColor }}
+                  aria-hidden
+                />
+                <span className="font-medium text-2xs" style={{ color: 'var(--color-ink-2)' }}>
+                  {reply.authorName}
+                </span>
+              </div>
+              <p>{reply.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Reply input */}
+      {!comment.resolved && (
+        <div className="mt-2 pt-2 border-t flex gap-1.5" style={{ borderColor: 'var(--color-border)' }}>
+          <input
+            type="text"
+            value={replyText}
+            onChange={(e) => onReplyChange(e.target.value)}
+            placeholder="Reply…"
+            className="flex-1 text-xs px-2 py-1 rounded border transition-colors"
+            style={{
+              backgroundColor: 'var(--color-paper-2)',
+              borderColor: 'var(--color-border)',
+              color: 'var(--color-ink)',
+              fontFamily: 'var(--font-ui)',
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') { e.preventDefault(); onSubmitReply() }
+            }}
+            aria-label="Write a reply"
+          />
+          <button
+            type="button"
+            onClick={onSubmitReply}
+            disabled={!replyText.trim()}
+            className="px-2 py-1 rounded text-xs font-medium transition-colors cursor-pointer disabled:opacity-40"
+            style={{
+              backgroundColor: 'var(--color-paper-3)',
+              color: 'var(--color-ink-2)',
+              border: '1px solid var(--color-border)',
+            }}
+            aria-label="Post reply"
+          >
+            Reply
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SuggestionCard({
+  suggestion,
+  onAccept,
+  onReject,
+}: {
+  suggestion: SuggestionItem
+  onAccept: () => void
+  onReject: () => void
+}) {
+  const isAccepted = suggestion.status === 'accepted'
+  const isRejected = suggestion.status === 'rejected'
+  const isPending = suggestion.status === 'pending'
+
+  return (
+    <div
+      className="p-3 rounded border transition-opacity"
+      style={{
+        backgroundColor: isAccepted
+          ? 'var(--color-paper-2)'
+          : isRejected
+            ? 'var(--color-paper-2)'
+            : 'var(--color-chrome-bg)',
+        borderColor: 'var(--color-border)',
+        opacity: isPending ? 1 : 0.6,
+        fontFamily: 'var(--font-ui)',
+      }}
+    >
+      {/* Author + type badge */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-1.5">
+          <span
+            className="w-2 h-2 rounded-full flex-shrink-0"
+            style={{ backgroundColor: suggestion.authorColor }}
+            aria-hidden
+          />
+          <span className="text-xs font-medium" style={{ color: 'var(--color-ink)' }}>
+            {suggestion.authorName}
+          </span>
+        </div>
+        <span
+          className="text-2xs font-medium px-1.5 py-0.5 rounded"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            backgroundColor:
+              suggestion.type === 'insert' ? 'hsl(141 50% 92%)' : 'hsl(0 50% 93%)',
+            color:
+              suggestion.type === 'insert' ? 'var(--color-state-connected)' : 'hsl(0 65% 38%)',
+          }}
+        >
+          {suggestion.type === 'insert' ? '+add' : '−delete'}
+        </span>
+      </div>
+
+      {/* Diff preview */}
+      <div
+        className="px-2 py-1.5 rounded text-xs font-mono my-2"
+        style={{
+          backgroundColor: 'var(--color-paper-2)',
+          border: '1px solid var(--color-border)',
+          fontFamily: 'var(--font-mono)',
+          color: 'var(--color-ink)',
+        }}
+      >
+        {suggestion.type === 'insert' ? (
+          <span style={{ color: 'var(--color-state-connected)' }}>+{suggestion.text}</span>
+        ) : (
+          <span style={{ textDecoration: 'line-through', color: 'hsl(0 65% 45%)' }}>
+            -{suggestion.text}
+          </span>
+        )}
+      </div>
+
+      {/* Actions or status */}
+      {isPending ? (
+        <div className="flex justify-end gap-1.5 mt-1">
+          <button
+            type="button"
+            onClick={onReject}
+            className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border transition-colors cursor-pointer"
+            style={{
+              color: 'hsl(0 65% 45%)',
+              borderColor: 'hsl(0 50% 83%)',
+              backgroundColor: 'transparent',
+            }}
+            aria-label="Reject suggestion"
+          >
+            <X className="w-3 h-3" aria-hidden />
+            Reject
+          </button>
+          <button
+            type="button"
+            onClick={onAccept}
+            className="flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer"
+            style={{
+              backgroundColor: 'var(--color-state-connected)',
+              color: 'white',
+            }}
+            aria-label="Accept suggestion"
+          >
+            <Check className="w-3 h-3" aria-hidden />
+            Accept
+          </button>
+        </div>
+      ) : (
+        <div
+          className="text-right text-2xs capitalize"
+          style={{ color: 'var(--color-ink-3)', fontFamily: 'var(--font-mono)' }}
+        >
+          {suggestion.status}
+        </div>
+      )}
     </div>
   )
 }
