@@ -9,12 +9,12 @@ export default function Home() {
             Real-Time Collaborative Document Editor
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Google-Docs style CRDT editor • TipTap + Yjs + Awareness Protocol
+            Google-Docs style CRDT editor • TipTap + Yjs + Persistent CRDT Snapshots
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-            Stage 3: Live Presence & Cursors
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border border-purple-200">
+            Stage 4: Persistence Layer
           </span>
         </div>
       </div>
