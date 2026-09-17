@@ -4,13 +4,19 @@ const url = require('url')
 const { setupWSConnection, setPersistence, docs } = require('y-websocket/bin/utils')
 const storageInterface = require('./src/server/db/storage-interface')
 const compactionManager = require('./src/server/compaction')
+const RedisPubSubAdapter = require('./src/server/redis-pubsub-adapter')
 
 const host = process.env.HOST || '0.0.0.0'
 const port = parseInt(process.env.PORT || '1234', 10)
+const instanceId = process.env.INSTANCE_ID || `relay-${port}`
+const pubSubAdapter = new RedisPubSubAdapter({ instanceId, port })
 
 async function bootstrap() {
   // Initialize multi-tier storage cascade (Redis Hot Cache + PostgreSQL Durable Snapshots)
   await storageInterface.init()
+
+  // Initialize horizontal scaling Pub/Sub adapter
+  await pubSubAdapter.init(docs)
 
   // Register multi-tier persistence provider with y-websocket
   const cascadePersistence = storageInterface.getYjsPersistence()
@@ -42,9 +48,11 @@ async function bootstrap() {
         JSON.stringify({
           status: 'ok',
           service: 'y-websocket-server',
+          instanceId: pubSubAdapter.instanceId,
           persistence: 'enabled',
           persistenceMode: 'multi-tier-cascade',
           compaction: 'active',
+          cluster: pubSubAdapter.getMetrics(),
           storage: storageInterface.getMetrics(),
           activeDocs: Array.from(docs.keys()),
           port,
@@ -182,6 +190,7 @@ async function bootstrap() {
             uptimeSeconds: Math.floor(process.uptime()),
             activeRoomsCount: docs.size,
             rooms: activeRooms,
+            relay: pubSubAdapter.getMetrics(),
             compaction: compactionManager.getStats(),
             storage: storageInterface.getMetrics(),
             memory: {
@@ -206,12 +215,13 @@ async function bootstrap() {
   wss.on('connection', (ws, req) => {
     setupWSConnection(ws, req)
 
-    // Track doc in Compaction Manager
+    // Track doc in Compaction Manager & Pub/Sub Relay Adapter
     const urlParts = req.url.slice(1).split('?')
     const docName = urlParts[0] || 'default'
     const doc = docs.get(docName)
     if (doc) {
       compactionManager.trackDoc(docName, doc)
+      pubSubAdapter.bindDoc(docName, doc)
     }
   })
 

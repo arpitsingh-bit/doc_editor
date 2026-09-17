@@ -4,7 +4,7 @@
       "id": "hackathon-document",
       "title": "hackathon-document",
       "created_at": "2026-09-17T19:16:56.693Z",
-      "updated_at": "2026-09-17T19:19:07.905Z",
+      "updated_at": "2026-09-17T19:21:26.914Z",
       "owner_id": "anonymous"
     },
     "master-test-room-1789652554984": {
@@ -49,11 +49,25 @@
       "updated_at": "2026-09-17T19:18:59.089Z",
       "owner_id": "anonymous"
     },
-    "test-cascade-doc-1789672755301": {
-      "id": "test-cascade-doc-1789672755301",
-      "title": "Cascade Test Doc",
-      "created_at": "2026-09-17T19:19:15.303Z",
-      "updated_at": "2026-09-17T19:19:15.303Z",
+    "horizontal-sync-room-1789672836843": {
+      "id": "horizontal-sync-room-1789672836843",
+      "title": "horizontal-sync-room-1789672836843",
+      "created_at": "2026-09-17T19:20:37.867Z",
+      "updated_at": "2026-09-17T19:20:42.078Z",
+      "owner_id": "anonymous"
+    },
+    "horizontal-sync-room-1789672877630": {
+      "id": "horizontal-sync-room-1789672877630",
+      "title": "horizontal-sync-room-1789672877630",
+      "created_at": "2026-09-17T19:21:17.868Z",
+      "updated_at": "2026-09-17T19:21:17.868Z",
+      "owner_id": "anonymous"
+    },
+    "master-test-room-1789672881869": {
+      "id": "master-test-room-1789672881869",
+      "title": "master-test-room-1789672881869",
+      "created_at": "2026-09-17T19:21:22.687Z",
+      "updated_at": "2026-09-17T19:21:23.703Z",
       "owner_id": "anonymous"
     }
   },
@@ -158,10 +172,129 @@
     },
     {
       "id": 15,
-      "document_id": "test-cascade-doc-1789672755301",
-      "binary_state_base64": "AQHBpYmJBgAEAQVwcm9zZUVIZWxsbyBQcm9kdWN0aW9uIFBlcnNpc3RlbmNlOiBSZWRpcyBIb3QgQ2FjaGUgKyBQb3N0Z3JlU1FMIFNuYXBzaG90cyEA",
-      "created_at": "2026-09-17T19:19:15.303Z",
-      "bytes": 87
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:19:22.906Z",
+      "bytes": 148
+    },
+    {
+      "id": 16,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:19:37.907Z",
+      "bytes": 148
+    },
+    {
+      "id": 17,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:19:52.907Z",
+      "bytes": 148
+    },
+    {
+      "id": 18,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:20:23.904Z",
+      "bytes": 148
+    },
+    {
+      "id": 19,
+      "document_id": "horizontal-sync-room-1789672836843",
+      "binary_state_base64": "AQGnvJGlAQAEAQVwcm9zZSxSZWFsLXRpbWUgdXBkYXRlIGdlbmVyYXRlZCBvbiBSZWxheSBTZXJ2ZXIgQQA=",
+      "created_at": "2026-09-17T19:20:37.867Z",
+      "bytes": 62
+    },
+    {
+      "id": 20,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:20:38.903Z",
+      "bytes": 148
+    },
+    {
+      "id": 21,
+      "document_id": "horizontal-sync-room-1789672836843",
+      "binary_state_base64": "AQGnvJGlAQAEAQVwcm9zZSxSZWFsLXRpbWUgdXBkYXRlIGdlbmVyYXRlZCBvbiBSZWxheSBTZXJ2ZXIgQQA=",
+      "created_at": "2026-09-17T19:20:42.076Z",
+      "bytes": 62
+    },
+    {
+      "id": 22,
+      "document_id": "horizontal-sync-room-1789672836843",
+      "binary_state_base64": "AQGnvJGlAQAEAQVwcm9zZSxSZWFsLXRpbWUgdXBkYXRlIGdlbmVyYXRlZCBvbiBSZWxheSBTZXJ2ZXIgQQA=",
+      "created_at": "2026-09-17T19:20:42.078Z",
+      "bytes": 62
+    },
+    {
+      "id": 23,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:20:53.905Z",
+      "bytes": 148
+    },
+    {
+      "id": 24,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:21:08.906Z",
+      "bytes": 148
+    },
+    {
+      "id": 25,
+      "document_id": "horizontal-sync-room-1789672877630",
+      "binary_state_base64": "AgGkrIb6DgCEncPg2gQrLiB8IEJpLWRpcmVjdGlvbmFsIHJlc3BvbnNlIGZyb20gUmVsYXkgU2VydmVyIEIBncPg2gQABAEFcHJvc2UsUmVhbC10aW1lIHVwZGF0ZSBnZW5lcmF0ZWQgb24gUmVsYXkgU2VydmVyIEEA",
+      "created_at": "2026-09-17T19:21:17.868Z",
+      "bytes": 123
+    },
+    {
+      "id": 26,
+      "document_id": "horizontal-sync-room-1789672877630",
+      "binary_state_base64": "AgGkrIb6DgCEncPg2gQrLiB8IEJpLWRpcmVjdGlvbmFsIHJlc3BvbnNlIGZyb20gUmVsYXkgU2VydmVyIEIBncPg2gQABAEFcHJvc2UsUmVhbC10aW1lIHVwZGF0ZSBnZW5lcmF0ZWQgb24gUmVsYXkgU2VydmVyIEEA",
+      "created_at": "2026-09-17T19:21:17.868Z",
+      "bytes": 123
+    },
+    {
+      "id": 27,
+      "document_id": "master-test-room-1789672881869",
+      "binary_state_base64": "AQWu+u6BDAAHAQdkZWZhdWx0AwdoZWFkaW5nBwCu+u6BDAAGBACu+u6BDAETTWFzdGVyIFRlc3QgSGVhZGluZygArvrugQwABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:21:22.687Z",
+      "bytes": 121
+    },
+    {
+      "id": 28,
+      "document_id": "master-test-room-1789672881869",
+      "binary_state_base64": "AQWu+u6BDAAHAQdkZWZhdWx0AwdoZWFkaW5nBwCu+u6BDAAGBACu+u6BDAETTWFzdGVyIFRlc3QgSGVhZGluZygArvrugQwABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:21:23.692Z",
+      "bytes": 121
+    },
+    {
+      "id": 29,
+      "document_id": "master-test-room-1789672881869",
+      "binary_state_base64": "AQWu+u6BDAAHAQdkZWZhdWx0AwdoZWFkaW5nBwCu+u6BDAAGBACu+u6BDAETTWFzdGVyIFRlc3QgSGVhZGluZygArvrugQwABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:21:23.694Z",
+      "bytes": 121
+    },
+    {
+      "id": 30,
+      "document_id": "master-test-room-1789672881869",
+      "binary_state_base64": "AQWu+u6BDAAHAQdkZWZhdWx0AwdoZWFkaW5nBwCu+u6BDAAGBACu+u6BDAETTWFzdGVyIFRlc3QgSGVhZGluZygArvrugQwABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:21:23.701Z",
+      "bytes": 121
+    },
+    {
+      "id": 31,
+      "document_id": "master-test-room-1789672881869",
+      "binary_state_base64": "AQWu+u6BDAAHAQdkZWZhdWx0AwdoZWFkaW5nBwCu+u6BDAAGBACu+u6BDAETTWFzdGVyIFRlc3QgSGVhZGluZygArvrugQwABWxldmVsAXcBMQQBBXRpdGxlHVN5c3RlbSBBcmNoaXRlY3R1cmUgQmx1ZXByaW50AA==",
+      "created_at": "2026-09-17T19:21:23.703Z",
+      "bytes": 121
+    },
+    {
+      "id": 32,
+      "document_id": "hackathon-document",
+      "binary_state_base64": "AwS68ZS/DwABAQdkZWZhdWx0AQAFgbrxlL8PAAEAAweChvvbAgAAMce68ZS/DwC68ZS/DwYDCXBhcmFncmFwaAcAgob72wIxBgEAgob72wIyMMGChvvbAjG68ZS/DwYBAAiBgob72wJiAwGvw5awAQCBgob72wJuAgO68ZS/DwEACoKG+9sCAgAxMzyvw5awAQEAAg==",
+      "created_at": "2026-09-17T19:21:26.914Z",
+      "bytes": 148
     }
   ],
   "document_versions": []
