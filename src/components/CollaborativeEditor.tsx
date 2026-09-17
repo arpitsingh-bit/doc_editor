@@ -7,15 +7,6 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
-import { Extension } from '@tiptap/core'
-import { yUndoPlugin, undo, redo } from 'y-prosemirror'
-
-const YjsHistoryExtension = Extension.create({
-  name: 'yjsHistory',
-  addProseMirrorPlugins() {
-    return [yUndoPlugin()]
-  },
-})
 import {
   Bold,
   Italic,
@@ -105,7 +96,6 @@ function EditorSurface({
       StarterKit.configure({
         history: false,
       }),
-      YjsHistoryExtension,
       Collaboration.configure({
         document: doc,
       }),
@@ -250,10 +240,7 @@ function EditorSurface({
 
         <button
           type="button"
-          onClick={() => {
-            undo(editor.state, editor.view.dispatch)
-            editor.view.focus()
-          }}
+          onClick={() => editor.chain().focus().undo().run()}
           className="p-2 rounded-lg transition hover:bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer"
           title="Undo (Ctrl+Z)"
         >
@@ -262,10 +249,7 @@ function EditorSurface({
 
         <button
           type="button"
-          onClick={() => {
-            redo(editor.state, editor.view.dispatch)
-            editor.view.focus()
-          }}
+          onClick={() => editor.chain().focus().redo().run()}
           className="p-2 rounded-lg transition hover:bg-slate-100 text-slate-600 hover:text-slate-900 cursor-pointer"
           title="Redo (Ctrl+Y)"
         >
