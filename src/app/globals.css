@@ -140,6 +140,13 @@ body {
   /* measure is constrained via the wrapping .editor-page div, not here */
 }
 
+/* TipTap mounts this element after hydration. Keep its inherited document
+   colour explicit so a browser dark preference cannot leave white text on
+   the optional light-paper canvas. */
+.editor-prose.ProseMirror {
+  color: var(--color-ink) !important;
+}
+
 .ProseMirror > * + * {
   /* Vertical rhythm: let block elements manage their own top margins.
      Avoid collapsing by using margin-top, not margin-bottom exclusively. */

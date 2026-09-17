@@ -213,7 +213,7 @@ function EditorSurface({
     editorProps: {
       attributes: {
         // The editor element itself — measure + spacing live in .editor-page wrapper
-        class: 'focus:outline-none',
+        class: 'editor-prose focus:outline-none',
         'data-placeholder': 'Start writing — or paste to begin.',
       },
       handleTextInput: (view, from, to, text) => {
