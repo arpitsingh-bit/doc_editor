@@ -8,7 +8,7 @@ function EditorWithParams() {
   const searchParams = useSearchParams()
   const room = searchParams.get('room') || 'hackathon-document'
 
-  return <CollaborativeEditor roomName={room} />
+  return <CollaborativeEditor key={room} roomName={room} />
 }
 
 export default function Home() {
