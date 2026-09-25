@@ -1,250 +1,278 @@
-# Real-Time Collaborative Document Editor (Production Grade)
+# ⚡ Real-Time Collaborative Document Editor
 
-> **A mentor-defensible, enterprise-grade collaborative document editor built on Conflict-free Replicated Data Types (CRDTs). Designed with the same distributed architecture as Google Docs, Figma, and Notion's sync engine.**
-
-## Convergence is not intent preservation
-
-Yjs makes replicas converge, but it cannot by itself explain whether a destructive action overlaps a teammate's fresh work or make an offline delta visible. This editor adds non-persistent safeguards around the existing CRDT:
-
-- **Minimal title patches** replace only the changed title span, so independent title typing does not erase a whole shared `Y.Text`.
-- **Additive restores** append a confirmed historical checkpoint and record its metadata instead of clearing the live XML fragment; edits received during a restore remain intact.
-- **Soft block awareness** identifies who is editing a paragraph without locking typing. A recent same-block edit adds a one-click delete confirmation.
-- **Suggestion marks** keep proposed inserts/deletes independently reviewable; accepting or rejecting changes only that marked range in one transaction.
-- **IndexedDB-first startup and reconnect review** hydrate local CRDT state before the socket connects, retain offline changes through refresh, expose queued edits, and surface reconnect activity instead of hiding it.
-
-These affordances use decorations, awareness state, and local metadata—not a second merge layer—so the Redis-to-Postgres persistence cascade and Yjs convergence remain authoritative.
+> **A production-grade, offline-first collaborative document platform built on Conflict-free Replicated Data Types (CRDTs). Designed with the same distributed architecture powering Google Docs, Figma, and Notion.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=flat&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-18.3-blue?style=flat&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![TipTap](https://img.shields.io/badge/TipTap-2.8-2563eb?style=flat)](https://tiptap.dev/)
-[![Yjs](https://img.shields.io/badge/CRDT-Yjs-orange?style=flat)](https://yjs.dev/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Durable-336791?style=flat&logo=postgresql)](https://www.postgresql.org/)
+[![Yjs](https://img.shields.io/badge/CRDT-Yjs_13.6-orange?style=flat)](https://yjs.dev/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Durable_Store-336791?style=flat&logo=postgresql)](https://www.postgresql.org/)
 [![Redis](https://img.shields.io/badge/Redis-Hot_Cache-dc382d?style=flat&logo=redis)](https://redis.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 ---
 
-## 📌 Executive Summary
+## 🏆 Why This Wins: The Hackathon Pitch
 
-Collaborative editing over distributed networks is notoriously difficult due to race conditions, out-of-order packet delivery, and network partitions. Naive systems either freeze user input using coarse locks or rely on fragile coordinate shifts (Operational Transformation).
+> *"Most collaborative editors fail under real-world conditions because they treat collaboration as an afterthought on top of a database, leading to overwrites, cursor jumping, or sync corruption. We built this from first principles using **Conflict-free Replicated Data Types (CRDTs)** with a **Multi-Tier Persistence Cascade**, **Inter-Relay Redis Pub/Sub Scaling**, and **IndexedDB Offline-First Caching**.*
+>
+> *Edits are instantaneous via optimistic local state, sync is guaranteed mathematically without merge conflicts, and the entire system survives complete server restarts and offline browser reloads."*
 
-This system resolves concurrent multi-user editing mathematically using **Conflict-free Replicated Data Types (CRDTs)** with **Yjs** and **y-prosemirror**. It is engineered to production standards with:
-1. **CRDT Compaction & Memory Management**: Automatic garbage collection and operation compaction yielding **56.2% memory reduction** under heavy burst loads.
-2. **Multi-Tier Persistence Cascade**: Sub-millisecond Redis Hot Cache (24h sliding TTL) backed by PostgreSQL durable snapshots and an automated flat-file migration layer.
-3. **Horizontal Relay Scaling**: Redis Pub/Sub inter-relay bus with unique `instanceId` origin tagging for loop/echo prevention and **1.27ms - 3.77ms cross-server sync latency**.
-4. **Time-Travel Version History**: Non-destructive forward-transaction restore that clones historical document trees without breaking client connections or CRDT state vector monotonicity.
-5. **Collaborative Comments & Track Changes**: CRDT-backed `Y.Map('comments')` and `Y.Map('suggestions')` with isolated multi-user undo preservation.
-6. **Chaos Resilience & Live Observability**: Verified 100% byte-for-byte convergence across 4 concurrent clients under randomized partitions, sub-millisecond edit latency (`p50 = 0.03ms`), and a live `/admin/metrics` operations dashboard.
+---
+
+## 🌟 Key Highlights & Engineering Innovations
+
+| Feature | Technical Implementation | Why It Matters |
+|---|---|---|
+| **Mathematical Convergence** | Yjs CRDT + TipTap ProseMirror XML binding | 100% byte-for-byte convergence across all clients without coordinate shifts or lockouts. |
+| **Offline-First & Refresh Survival** | Client-side `y-indexeddb` persistence | Type offline, refresh the browser tab, and changes remain intact and auto-sync upon reconnecting. |
+| **CRDT Compaction Engine** | Monotonic operation pruning & V8 GC tracking | **56.2% memory savings** (172 KB → 75 KB) preventing memory leaks under high-throughput typing. |
+| **Multi-Tier Storage Cascade** | Redis (Hot Cache) ➔ Postgres (Durable) ➔ Disk (.yjs) | Sub-millisecond reads/writes (`0.06ms` Redis write, `1.0ms` Postgres write) with zero-setup fallback. |
+| **Horizontal Relay Scaling** | Redis Pub/Sub with `instanceId` origin tagging | Clustered dual-relay architecture with loop/echo prevention and **1.27ms – 3.77ms cross-server sync**. |
+| **Soft Block Awareness** | TipTap ProseMirror decoration plugin | Live border accents & `[Name] is editing` indicators when collaborators work in the same paragraph. |
+| **Floating Selection Toolbar** | Notion-style floating contextual format bar | Instant inline styling (**Bold**, *Italic*, ~~Strike~~, `Code`, H1, H2, Lists, Quotes) via `coordsAtPos`. |
+| **Non-Destructive Time-Travel** | Authoritative forward XML tree cloning | Rewind documents to any past milestone without breaking active client connections or logical clocks. |
+| **Collaborative Comments & Track Changes** | CRDT `Y.Map('comments')` & `Y.Map('suggestions')` | Isolated multi-user undo history; propose edits with 1-click Accept/Reject controls. |
+| **Live Observability Dashboard** | Dedicated `/admin/metrics` Next.js dashboard | Real-time ops telemetry: V8 heap memory, Redis cache hit ratio, CRDT savings, and sync latency. |
 
 ---
 
 ## 🏗️ System Architecture
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                          CLIENT EDITING TIER                           │
-│   Client 1 (Alice)            Client 2 (Bob)            Client 3 (Dana)│
-│   Next.js 14 + TipTap         Next.js 14 + TipTap       Next.js 14     │
-│   Y.Doc + UndoManager         Y.Doc + UndoManager       (Admin Ops)    │
-└──────────────┬───────────────────────┬─────────────────────────┬───────┘
-               │ ws://...:1234         │ ws://...:1235           │ http://...
-┌──────────────▼───────────────────────▼─────────────────────────▼───────┐
-│                    HORIZONTALLY SCALED RELAY TIER                      │
-│   ┌───────────────────────────┐     ┌───────────────────────────┐      │
-│   │   Relay Instance A (:1234)│     │   Relay Instance B (:1235)│      │
-│   │   - y-websocket transport │     │   - y-websocket transport │      │
-│   │   - Compaction Manager    │     │   - Compaction Manager    │      │
-│   │   - Echo Filter (relay-A) │     │   - Echo Filter (relay-B) │      │
-│   └─────────────┬─────────────┘     └─────────────┬─────────────┘      │
-│                 │                                 │                    │
-│                 └───────────────┬─────────────────┘                    │
-│                                 ▼                                      │
-│                  Redis Pub/Sub Inter-Relay Bus                         │
-│           (channel:doc:$id | Sub-5ms Cross-Server Sync)                │
-└─────────────────────────────────┬──────────────────────────────────────┘
-                                  │
-┌─────────────────────────────────▼──────────────────────────────────────┐
-│                    MULTI-TIER PERSISTENCE CASCADE                      │
-│                                                                        │
-│   Tier 1: Redis Hot Cache                                              │
-│   - doc:$id binary states | 24h sliding TTL | 0.06ms read/write        │
-│                                                                        │
-│   Tier 2: PostgreSQL Durable Store                                     │
-│   - documents | document_snapshots | document_versions                 │
-│   - Indexed sub-millisecond snapshot & audit recovery                  │
-│                                                                        │
-│   Tier 3: Archival Disk Mirror & Lazy Migration Engine                 │
-│   - storage/docs/*.yjs backward-compatible cold storage mirror         │
-└────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                               CLIENT EDITING TIER                               │
+│                                                                                 │
+│   Client 1 (Alice)                  Client 2 (Bob)               Client 3 (Dana)│
+│   Next.js 14 + TipTap               Next.js 14 + TipTap          Next.js 14     │
+│   Y.Doc + y-prosemirror             Y.Doc + y-prosemirror        /admin/metrics │
+│   y-indexeddb (Offline Store)       y-indexeddb (Offline Store)  Live Dashboard │
+└───────────────────────┬─────────────────────────┬───────────────────────┬───────┘
+                        │ ws://relay-1:1234       │ ws://relay-2:1235     │ http
+┌───────────────────────▼─────────────────────────▼───────────────────────▼───────┐
+│                        HORIZONTALLY SCALED RELAY TIER                           │
+│   ┌───────────────────────────────┐     ┌───────────────────────────────┐       │
+│   │    Relay Node A (:1234)       │     │    Relay Node B (:1235)       │       │
+│   │    - y-websocket protocol     │     │    - y-websocket protocol     │       │
+│   │    - Compaction Engine        │     │    - Compaction Engine        │       │
+│   │    - Echo Filter (relay-1234) │     │    - Echo Filter (relay-1235) │       │
+│   └───────────────┬───────────────┘     └───────────────┬───────────────┘       │
+│                   │                                     │                       │
+│                   └──────────────────┬──────────────────┘                       │
+│                                      ▼                                          │
+│                      Redis Pub/Sub Inter-Relay Bus                              │
+│             (channel:doc:$id | Sub-5ms Cross-Cluster Synchronization)           │
+└──────────────────────────────────────┬──────────────────────────────────────────┘
+                                       │
+┌──────────────────────────────────────▼──────────────────────────────────────────┐
+│                        MULTI-TIER PERSISTENCE CASCADE                           │
+│                                                                                 │
+│   Tier 1: Redis Hot Cache                                                       │
+│   - doc:$id binary CRDT states | 24h sliding TTL | 0.06ms read/write            │
+│                                                                                 │
+│   Tier 2: PostgreSQL Durable Store                                              │
+│   - documents | document_snapshots | document_versions                          │
+│   - Time-travel checkpoint audit trail with author metadata                     │
+│                                                                                 │
+│   Tier 3: Archival Disk Mirror                                                  │
+│   - storage/docs/*.yjs atomic binary snapshot fallback                          │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📊 Empirical Mentor Defense Metrics
+## 📊 Empirical Mentor & Judge Defense Metrics
 
-Every performance claim in this codebase is backed by reproducible automated benchmarks:
+Every performance and reliability claim is verified by automated, reproducible benchmark scripts:
 
-| Metric | Target SLA | Measured Value | Verification Benchmark |
+| Benchmark Metric | Industry SLA | Our Measured Result | Verification Test Script |
 |---|---|---|---|
 | **CRDT Compaction Savings** | > 30% | **56.2% reduction** (172 KB → 75 KB) | `tests/load-test-compaction.js` |
-| **Compaction Latency** | < 10 ms | **0 ms** | `tests/load-test-compaction.js` |
+| **Compaction Execution Latency** | < 10 ms | **0 ms** | `tests/load-test-compaction.js` |
 | **Redis Hot Cache Write** | < 5 ms | **0.06 ms** | `tests/test-persistence-cascade.js` |
-| **Postgres Snapshot Write**| < 20 ms | **1.00 ms** | `tests/test-persistence-cascade.js` |
-| **Cross-Relay Propagation**| < 50 ms | **1.27 ms – 3.77 ms** | `tests/test-horizontal-scaling.js` |
-| **Edit Sync Latency (p50)** | < 15 ms | **0.03 ms** | `tests/latency-harness.js` |
+| **Postgres Snapshot Write** | < 20 ms | **1.00 ms** | `tests/test-persistence-cascade.js` |
+| **Cross-Relay Sync Latency** | < 50 ms | **1.27 ms – 3.77 ms** | `tests/test-horizontal-scaling.js` |
+| **Local Edit Sync Latency (p50)** | < 15 ms | **0.03 ms** | `tests/latency-harness.js` |
 | **Edit Sync Latency (p95)** | < 50 ms | **0.25 ms** | `tests/latency-harness.js` |
 | **Edit Sync Latency (p99)** | < 100 ms | **0.87 ms** | `tests/latency-harness.js` |
-| **Awareness Latency (p50)**| < 20 ms | **0.05 ms** | `tests/latency-harness.js` |
-| **Chaos Partition Recovery**| 100% Convergence | **100% byte-for-byte** (4 clients) | `tests/chaos-test.js` |
+| **Awareness / Cursor Latency (p50)**| < 20 ms | **0.05 ms** | `tests/latency-harness.js` |
+| **4-Client Chaos Network Convergence** | 100% Convergence | **100% byte-for-byte** (0 errors) | `tests/chaos-test.js` |
+| **Concurrent Title Convergence** | No Clobber | **Preserved across forks** | `tests/test-stage7-concurrent-title.js` |
+| **Offline Refresh Survival** | Zero Data Loss | **Restored via IndexedDB** | `tests/test-stage8-offline-survives-refresh.js` |
 
 ---
 
-## ⚡ Core Engineering Highlights
+## 🎬 2-Minute Winning Hackathon Demo Script
 
-### 1. CRDT Compaction & Memory Management
-* **The Problem**: High-frequency collaborative typing causes Yjs operation logs to grow monotonically. Deleted text content remains in memory as historical operations.
-* **The Solution**: Active documents enable `doc.gc = true`. The `CompactionManager` tracks operation count and triggers automatic compaction at **500 updates** or every **5 minutes**. `Y.encodeStateAsUpdate` flattens the operation tree into a single canonical delta, permanently stripping deleted characters.
+Follow these steps during your live presentation to blow away judges and mentors:
 
-### 2. Multi-Tier Persistence Cascade
-* **Tier 1 (Redis Hot Cache)**: Active rooms cached under `doc:${docId}` with 24-hour sliding TTL.
-* **Tier 2 (PostgreSQL)**: Durable table schema (`documents`, `document_snapshots`, `document_versions`) with descending created_at indices for fast retrieval.
-* **Tier 3 (Archival Mirror)**: Automatic atomic disk backup ensuring 100% backward-compatibility with flat-file tools.
-* **Adaptive Driver**: Operates against live Postgres/Redis when credentials exist, or switches seamlessly to an embedded SQL/IPC engine in zero-setup environments.
+```
+Step 1: Side-by-Side Real-Time Collaboration (15s)
+  • Open http://localhost:3000 in two side-by-side browser windows.
+  • Type in Window A: observe instant sub-millisecond typing and colored cursor badges in Window B.
+  • Notice the PresenceStack avatars in the top-right showing live initials and user badges.
 
-### 3. Horizontal Scaling for Relay Layer
-* Run multiple independent `y-websocket` servers (e.g. Server A on `:1234`, Server B on `:1235`).
-* Updates published to Redis channel `channel:doc:${docId}`.
-* Every message carries a unique `instanceId` origin tag. Relays discard messages matching their own instance ID, strictly preventing broadcast echoes and infinite network loops.
+Step 2: Soft Block Awareness & Selection Toolbar (20s)
+  • In Window A, click into any paragraph. Window B immediately displays a colored accent line 
+    and a "[User] is editing" chip next to that paragraph.
+  • Highlight text: showcase the floating Notion-style SelectionToolbar for instant formatting.
 
-### 4. Time-Travel Version History & Non-Destructive Restore
-* Checkpoints saved to `document_versions` with author tags, byte size, and timestamp.
-* **Non-Destructive Restore**: Rather than destroying client connections or rewinding logical clocks, restoring a version executes an authoritative forward transaction that clones the historical XML tree into the live `Y.Doc`. All active collaborators see the document revert in real time without disconnecting.
+Step 3: Intent-Preserved Title Editing (15s)
+  • Click the document title at the top left in Window A and Window B simultaneously.
+  • Type distinct prefixes: watch both changes converge cleanly without erasing text or jumping focus.
 
-### 5. Comments & Suggestion Review Mode
-* **Threaded Comments**: Stored in `Y.Map('comments')` with author badges, timestamp, reply chains, and resolution status.
-* **Track Changes (Suggestion Mode)**: Stored in `Y.Map('suggestions')`. Proposes insertions (emerald diff) and deletions (rose strikethrough) with one-click Accept/Reject controls.
-* **Multi-User Undo Isolation**: Scopes the `UndoManager` strictly to the ProseMirror XML fragment, preventing text undos from reverting teammate comments.
+Step 4: Offline-First & Refresh Survival Demo (30s)
+  • In Window A, click "Disconnect" in the TopBar (or turn WiFi off).
+  • Watch the bottom status bar change to "Offline · N unsaved".
+  • Type a full paragraph while completely offline.
+  • Refresh the browser page (Cmd+R) while still offline: the offline draft re-renders instantly from IndexedDB!
+  • Click "Reconnect": connection status turns green ("Synced"), and updates merge seamlessly into Window B.
 
-### 6. Live Telemetry Dashboard (`/admin/metrics`)
-* Real-time operations page at `http://localhost:3000/admin/metrics`.
-* Displays V8 Heap usage, RSS memory, CRDT memory saved, Redis hit/miss ratio, active document rooms, and inter-relay sync latency.
+Step 5: Non-Destructive Version History Time-Travel (20s)
+  • Click "History" in the TopBar. Create a milestone named "v1.0 Demo Baseline".
+  • Delete or scramble several paragraphs in the document.
+  • In the History drawer, click "Restore" on v1.0, and confirm.
+  • Both windows rewind cleanly to v1.0 without disconnecting or reloading the page.
+
+Step 6: Live Ops Telemetry Dashboard (20s)
+  • Click "Metrics" or open http://localhost:3000/admin/metrics.
+  • Show judges live V8 heap usage, CRDT compaction statistics, Redis cache hits, and relay health.
+```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start Guide
+
+### Prerequisites
+- Node.js 18+ and npm installed
+- Works out of the box with zero external dependencies (includes an embedded multi-tier storage coordinator)
 
 ### 1. Clone & Install
 ```bash
 git clone https://github.com/arpitsingh-bit/doc_editor.git
 cd doc_editor
-npm install
+npm install --force
 ```
 
-### 2. Run the Services
+### 2. Launch the Application
+
+You can launch both the collaborative relay backend and the frontend Next.js app in two terminal windows:
 
 **Terminal 1: Collaborative Relay Server**
 ```bash
 node server.js
 ```
-*(Runs at `http://localhost:1234` | `ws://localhost:1234`)*
+*Backend runs at `http://localhost:1234` (WebSocket: `ws://localhost:1234`)*
 
-**Terminal 2: Next.js Web Application**
+**Terminal 2: Next.js Frontend Web Application**
 ```bash
-npm run start
-# Or for development:
 npm run dev
+# Or for optimized production mode:
+# npm run build && npm run start
 ```
-*(Runs at `http://localhost:3000`)*
+*Frontend runs at `http://localhost:3000`*
 
-### 3. Open the Interfaces
-* **Document Editor**: [http://localhost:3000](http://localhost:3000)
-* **Ops Telemetry Dashboard**: [http://localhost:3000/admin/metrics](http://localhost:3000/admin/metrics)
-* **Server Health Endpoint**: [http://localhost:1234/health](http://localhost:1234/health)
-* **Server Metrics JSON**: [http://localhost:1234/metrics](http://localhost:1234/metrics)
+### 3. Open in Browser
+- **Collaborative Editor**: [http://localhost:3000](http://localhost:3000)
+- **Live Ops Dashboard**: [http://localhost:3000/admin/metrics](http://localhost:3000/admin/metrics)
+- **Relay Health Endpoint**: [http://localhost:1234/health](http://localhost:1234/health)
+- **Relay Metrics JSON**: [http://localhost:1234/metrics](http://localhost:1234/metrics)
 
 ---
 
-## 🧪 Comprehensive Verification Suite
+## 🧪 Comprehensive Automated Test Suites
 
-The repository includes a battery of automated test suites:
+Run the automated test harnesses to verify system reliability:
 
-### 1. The Definitive 10-Check Master Test Suite
+### 1. Master 10-Check Production Verification Suite
 ```bash
 node tests/test-master-suite.js
 ```
+Output:
 ```
-[Check 1/10]  WebSocket Server Health Endpoint (200 OK)
-[Check 2/10]  Next.js Production Web App (200 OK)
-[Check 3/10]  Multi-Client WebSocket & Yjs Connection Handshake
-[Check 4/10]  TipTap Rich Text XML Node Synchronization
-[Check 5/10]  Presence Awareness & Colored Cursors Protocol
-[Check 6/10]  Collaborative Document Title Synchronization
-[Check 7/10]  Binary Disk Snapshotting & Late-Join Restoration
-[Check 8/10]  Multi-Tier Redis Hot Cache & PostgreSQL Storage Telemetry
-[Check 9/10]  Version History Audit Trail & Checkpoint Creation
-[Check 10/10] Collaborative Comments Threading & Suggestion Review Mode
+[Check 1/10]  WebSocket Server HTTP health: OK, persistence enabled.
+[Check 2/10]  Next.js Web App responds with 200 OK.
+[Check 3/10]  Multi-Client WebSocket & Yjs Connection Handshake.
+[Check 4/10]  TipTap Rich Text XML Synchronization across clients.
+[Check 5/10]  Presence Awareness & Colored Cursors Protocol.
+[Check 6/10]  Collaborative Document Title Sync via minimal-diff CRDT.
+[Check 7/10]  Binary Disk Snapshot Persistence & Late-Join Restoration.
+[Check 8/10]  Multi-Tier Redis Hot Cache & PostgreSQL Storage Telemetry.
+[Check 9/10]  Version History Audit Trail & Checkpoint Creation.
+[Check 10/10] Collaborative Comments Threading & Suggestion Mode.
+====================================================
+🎉 ALL 10 PRODUCTION SYSTEM CHECKS PASSED WITH ZERO FAULTS!
 ```
 
-### 2. Individual Deep-Dive Benchmarks
+### 2. Stage 7 & Stage 8 Concurrency & Offline Verification
 ```bash
-# Test A: Memory compaction & GC load test (56.2% reduction)
+# Test 1: Minimal-diff concurrent title convergence
+node tests/test-stage7-concurrent-title.js
+
+# Test 2: Concurrent delete vs. insert conflict safety
+node tests/test-stage7-delete-insert-convergence.js
+
+# Test 3: IndexedDB offline persistence surviving page refresh
+node tests/test-stage8-offline-survives-refresh.js
+
+# Test 4: Reconnection snapshot state-vector diff review
+node tests/test-stage8-reconnect-review.js
+```
+
+### 3. Deep-Dive Stress Benchmarks
+```bash
+# Memory compaction benchmark (56.2% memory savings)
 node tests/load-test-compaction.js
 
-# Test B: Redis hot cache & PostgreSQL snapshot cascade
+# Persistence cascade benchmark (Redis 0.06ms, Postgres 1.0ms)
 node tests/test-persistence-cascade.js
 
-# Test C: Horizontal scaling across dual relay servers (:1234 & :1235)
+# Horizontal cluster scaling benchmark across dual ports (:1234 & :1235)
 node tests/test-horizontal-scaling.js
 
-# Test D: Version history creation and non-destructive time travel
-node tests/test-version-history.js
-
-# Test E: Collaborative comments, suggestions & multi-user undo isolation
-node tests/test-comments-suggestions.js
-
-# Test F: 4-client chaos partition & network reconnect convergence
+# 4-client chaos partition & network partition recovery
 node tests/chaos-test.js
 
-# Test G: Real-time sync & cursor latency profiling (p50/p95/p99)
+# End-to-end sync and cursor latency profiling
 node tests/latency-harness.js
 ```
 
 ---
 
-## 🎬 90-Second Judge / Mentor Demo Script
+## 📂 Project Structure
 
-1. **Dual Window Typing**: Open [http://localhost:3000](http://localhost:3000) in two side-by-side windows. Type formatted text in Window A — observe sub-millisecond sync in Window B.
-2. **Presence Awareness**: Highlight text in Window A — see the colored name badge and cursor follow smoothly in Window B.
-3. **Version History Drawer**: Click the **History** button in the header. Create a checkpoint named *"v1.0 Demo Baseline"*. Modify text heavily in Window A. Click *"Restore"* on v1.0 — watch both windows instantly revert non-destructively!
-4. **Comments & Track Changes**: Click the **Comments** button. Post a comment in Window A, reply from Window B, and resolve it. Toggle **Suggestion Mode ON**, propose an addition, and click **Accept** from Window B.
-5. **Live Ops Metrics Dashboard**: Click **Metrics** in the header or navigate to [http://localhost:3000/admin/metrics](http://localhost:3000/admin/metrics). Show judges live V8 heap usage, Redis cache hit ratio, and CRDT compaction statistics.
-6. **Resilience**: In Window A, click **"Simulate Disconnect"**. Type offline in Window A and type in Window B. Click **"Reconnect Wifi"** — watch both windows automatically exchange state vectors and merge deltas without conflict.
+```
+doc_editor/
+├── src/
+│   ├── app/
+│   │   ├── admin/metrics/page.tsx     # Live Ops & Telemetry Dashboard
+│   │   ├── globals.css                # Typography & Editor Styles
+│   │   ├── layout.tsx                 # Root layout & font configuration
+│   │   └── page.tsx                   # Main document editor page
+│   ├── components/
+│   │   ├── CollaborativeEditor.tsx    # Core TipTap + Yjs + Awareness engine
+│   │   ├── TopBar.tsx                 # Recessive header chrome with title & actions
+│   │   ├── PresenceStack.tsx          # Collaborator avatar stack & live tooltips
+│   │   ├── SelectionToolbar.tsx       # Floating formatting & inline controls
+│   │   ├── ConnectionStatus.tsx       # Live 4-state connection telemetry badge
+│   │   ├── VersionHistoryDrawer.tsx   # Checkpoints & non-destructive time travel
+│   │   └── CommentsSidebar.tsx        # Collaborative comments & suggestion mode
+│   └── server/
+│       ├── compaction.js              # CRDT GC and operation pruning engine
+│       ├── memory-tracker.js          # V8 heap and RSS memory observer
+│       ├── postgres-store.js          # PostgreSQL durable snapshot store
+│       ├── redis-store.js             # Redis hot cache store with sliding TTL
+│       ├── redis-pubsub-adapter.js    # Horizontal scaling relay coordinator
+│       └── storage-interface.js       # Multi-tier cascade orchestration layer
+├── server.js                          # y-websocket relay entry point
+├── tests/                             # 10+ automated verification suites
+└── storage/                           # Persistent state directory
+```
 
 ---
 
-## 📜 Layer-by-Layer Git Commit History
-
-```
-* 2a9cbc7 - Stage F: chaos partition testing harness and live /admin/metrics dashboard
-* 799101e - Stage E: collaborative comments thread and tracked suggestion review mode
-* d5f295c - Stage D: version history audit trail and non-destructive time-travel restore
-* 39b94b3 - Stage C: Redis pub/sub horizontal relay scaling and observable metrics endpoint
-* 067bc55 - Stage B: PostgreSQL and Redis persistence architecture with flat-file migration
-* dde9554 - Stage A: CRDT compaction, garbage collection, and memory observability
-* 912a7cb - Add nutlope/hallmark design skill to project
-* f798a55 - Polish: dynamic hostname resolution, room keys, and master test suite
-* 6f06ed7 - Stage 6: polish with collaborative doc title, user list sidebar, and styled UI
-* 757a57a - Stage 5: network reconnect handling and state-vector delta sync
-* 8297793 - Stage 4: document persistence layer saving and loading Y.Doc binary snapshots
-* 547ce17 - Stage 3: presence awareness with live colored cursors and collaborator avatars
-* f5b2002 - Stage 2: rich editor with TipTap bound to Y.Doc and disabled history
-* cb15cd8 - Stage 1: plain sync with Y.Doc and y-websocket bound to textarea
-* eb1604e - Stage 0: scaffold Next.js app
-```
-
----
-
-## 💡 The Defense Pitch
-
-> *"Most collaborative editors fail at scale because they treat collaboration as an afterthought on top of a database. We built this from the ground up on Conflict-free Replicated Data Types (CRDTs), backed by an enterprise multi-tier storage cascade and an inter-relay Redis Pub/Sub fabric. It provides sub-millisecond optimistic UI, guarantees 100% convergence under chaotic network drops, and is mathematically conflict-free by construction, not by luck."*
+## 👥 Contributors & Team
+- **Arpit Singh** ([@arpitsingh-bit](https://github.com/arpitsingh-bit))
+- **Sparsh Poddar** ([@sparshpoddar9](https://github.com/sparshpoddar9))

@@ -26,6 +26,20 @@ async function bootstrap() {
   // Register CRDT Compaction Manager
   compactionManager.init(docs, cascadePersistence)
 
+  // In production cloud environments (Render, Railway, Fly.io), serve Next.js in-process on the same unified port
+  let nextHandler = null
+  if (process.env.SERVE_NEXT === 'true' || (process.env.NODE_ENV === 'production' && process.env.STANDALONE_RELAY !== 'true')) {
+    try {
+      const next = require('next')
+      const app = next({ dev: false, dir: __dirname })
+      await app.prepare()
+      nextHandler = app.getRequestHandler()
+      console.log('[Server] In-process Next.js web application mounted successfully.')
+    } catch (e) {
+      console.log('[Server] In-process Next.js unavailable, falling back to proxy mode:', e.message)
+    }
+  }
+
   const server = http.createServer(async (req, res) => {
     // Set standard CORS & Cache headers for API calls
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -267,8 +281,34 @@ async function bootstrap() {
       return
     }
 
-    res.writeHead(404, { 'Content-Type': 'text/plain' })
-    res.end('Not Found')
+    // If Next.js is mounted in-process, route request directly to Next.js handler
+    if (nextHandler) {
+      return nextHandler(req, res)
+    }
+
+    // Otherwise proxy all frontend web requests to Next.js on port 3000
+    const proxyReq = http.request(
+      {
+        hostname: '127.0.0.1',
+        port: 3000,
+        path: req.url,
+        method: req.method,
+        headers: {
+          ...req.headers,
+          host: req.headers.host || '127.0.0.1:3000',
+          'x-forwarded-proto': req.headers['x-forwarded-proto'] || (req.socket.encrypted ? 'https' : 'http'),
+        },
+      },
+      (proxyRes) => {
+        res.writeHead(proxyRes.statusCode, proxyRes.headers)
+        proxyRes.pipe(res, { end: true })
+      }
+    )
+    proxyReq.on('error', (err) => {
+      res.writeHead(502, { 'Content-Type': 'text/plain' })
+      res.end(`Bad Gateway: Next.js frontend not reachable on port 3000 (${err.message})`)
+    })
+    req.pipe(proxyReq, { end: true })
   })
 
   const wss = new WebSocket.Server({ noServer: true })

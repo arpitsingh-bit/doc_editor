@@ -376,10 +376,19 @@ export default function CollaborativeEditor({
   // Dynamically resolve WebSocket URL matching current browser host
   const resolvedServerUrl = useMemo(() => {
     if (serverUrl) return serverUrl
+    if (process.env.NEXT_PUBLIC_WS_URL) return process.env.NEXT_PUBLIC_WS_URL
     if (typeof window !== 'undefined') {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      const host = window.location.hostname || 'localhost'
-      return `${protocol}//${host}:1234`
+      // If browsing directly on port 3000 in local dev, connect to relay on 1234
+      if (window.location.port === '3000') {
+        return `${protocol}//${window.location.hostname}:1234`
+      }
+      // If browsing on port 1234, connect to port 1234
+      if (window.location.port === '1234') {
+        return `${protocol}//${window.location.hostname}:1234`
+      }
+      // On public tunnels or cloud deployments (standard 80/443 ports), use the exact same host
+      return `${protocol}//${window.location.host}`
     }
     return 'ws://localhost:1234'
   }, [serverUrl])
