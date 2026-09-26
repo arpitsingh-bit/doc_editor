@@ -9,6 +9,7 @@ import { Mark, Extension } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
+import Placeholder from '@tiptap/extension-placeholder'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { ySyncPluginKey } from 'y-prosemirror'
@@ -204,6 +205,10 @@ function EditorSurface({
         provider: provider,
         user: currentUser,
       }),
+      Placeholder.configure({
+        placeholder: 'Start writing — or paste to begin.',
+        showOnlyWhenEditable: true,
+      }),
       suggestionMark,
       Extension.create({
         name: 'softBlockAwareness',
@@ -214,7 +219,6 @@ function EditorSurface({
       attributes: {
         // The editor element itself — measure + spacing live in .editor-page wrapper
         class: 'editor-prose focus:outline-none',
-        'data-placeholder': 'Start writing — or paste to begin.',
       },
       handleTextInput: (view, from, to, text) => {
         if (!isSuggestingMode) return false
