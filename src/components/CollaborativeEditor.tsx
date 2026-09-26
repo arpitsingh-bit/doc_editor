@@ -642,6 +642,9 @@ export default function CollaborativeEditor({
         copiedLink={copiedLink}
         isLightPaper={isLightPaper}
         showUserModal={showUserModal}
+        status={status}
+        lastSyncTime={lastSyncTime}
+        pendingOfflineUpdates={pendingOfflineUpdates}
         onTitleChange={handleTitleChange}
         onToggleOffline={toggleNetworkSimulation}
         onToggleComments={() => setShowCommentsSidebar(!showCommentsSidebar)}

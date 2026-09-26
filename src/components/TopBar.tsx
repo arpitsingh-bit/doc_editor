@@ -17,6 +17,7 @@ import {
   PenLine,
 } from 'lucide-react'
 import { PresenceStack } from './PresenceStack'
+import { ConnectionStatus } from './ConnectionStatus'
 
 interface UserState {
   name: string
@@ -40,6 +41,9 @@ interface TopBarProps {
   copiedLink: boolean
   isLightPaper: boolean
   showUserModal: boolean
+  status: 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+  lastSyncTime: string
+  pendingOfflineUpdates: number
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onToggleOffline: () => void
   onToggleComments: () => void
@@ -69,6 +73,9 @@ export function TopBar({
   copiedLink,
   isLightPaper,
   showUserModal,
+  status,
+  lastSyncTime,
+  pendingOfflineUpdates,
   onTitleChange,
   onToggleOffline,
   onToggleComments,
@@ -152,6 +159,17 @@ export function TopBar({
         <div className="flex items-center gap-1.5 flex-shrink-0">
           {/* Presence avatars */}
           <PresenceStack collaborators={collaborators} />
+
+          {/* The connection state belongs beside presence, where writers look
+              before trusting a shared document. Hide its prose on narrow bars
+              but retain the status icon and accessible state. */}
+          <div className="hidden sm:block">
+            <ConnectionStatus
+              status={status}
+              lastSyncTime={lastSyncTime}
+              pendingOfflineUpdates={pendingOfflineUpdates}
+            />
+          </div>
 
           {/* Divider */}
           <span
